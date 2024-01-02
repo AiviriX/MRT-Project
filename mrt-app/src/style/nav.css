@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
-    background-color: red;
-}
-
 .topNav img {
     size: 30px;
     position: fixed;
+}
+
+.honk {
+    background-color: blue;
 }
 
 li { 
@@ -20,7 +20,8 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;-color: #dddddd;
+    background-color: #3535c2;-color: #dddddd;
+    top: 0;
 }
 
 li a {
@@ -35,3 +36,12 @@ li a:hover{
     background-color: #2b2a2a;
 }
 
+li button{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    background-color: #2b2a2a;
+
+}
