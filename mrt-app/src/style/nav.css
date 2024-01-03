@@ -12,7 +12,15 @@
 }
 
 li { 
-    float: left;   
+    float: right;
+}
+
+.right{
+    float: right;
+}
+
+.left {
+    float: left;
 }
 
 ul {
