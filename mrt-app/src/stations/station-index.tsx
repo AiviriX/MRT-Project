@@ -13,12 +13,14 @@ const Stations = () => {
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
                 crossOrigin="">
             </script>
-            <MapContainer center={[14.550472362838512, 121.02875827415475]} zoom={13} scrollWheelZoom={true}
+            <MapContainer center={[14.5047, 121.0297]} zoom={12} scrollWheelZoom={true}
             className='box-border h-32 w-32 p-4 border-4 mx-3 my-3 pos-center'>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+
+                {/*TODO Add to json late her */}
                 <Marker position={[14.652208254624389, 121.03234323138653]}>
                     <Popup>
                         North Avenue Station
@@ -96,10 +98,12 @@ const Stations = () => {
                         Taft Avenue Station
                     </Popup>
                 </Marker>
-
-
-
             </MapContainer>
+
+            <div className='box-border h-32 w-32 p-4 border-4 mx-3 my-3 pos-center'>
+                
+            </div>
+
 
         </div>
     );

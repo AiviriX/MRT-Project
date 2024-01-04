@@ -17,12 +17,10 @@ export const Navigation = () => {
             <li> <a className='font-sans'> Home </a></li>
             <li> <a type="button"> News </a> </li>
             <li> <a > Contact </a> </li>
-            <li> <a type="button"> Stations </a> </li>
+            <li> <a href='stations'> Stations </a> </li>
             <li className="background-color:red"> <a href="#"> About Us </a> </li>
         </ul>
     </nav>
     );
 }
-
-
 export default Navigation

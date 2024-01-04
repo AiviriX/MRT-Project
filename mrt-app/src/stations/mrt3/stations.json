@@ -1,0 +1,56 @@
+{
+    "Stations": [
+        {
+            "Name": "North Avenue Station",
+            "coordinates" : [14.652208254624389, 121.03234323138653]
+        },
+        {
+            "Name": "Quezon Avenue Station",
+            "coordinates" : [14.643348953836682, 121.03796281550703]
+        },
+        {
+            "Name": "GMA Kamuning Station",
+            "coordinates" : [14.635222115280635, 121.04333937202267]
+        },
+        {
+            "Name": "Araneta Center Cubao Station",
+            "coordinates" : [14.619525829473252, 121.05111117373505]
+        },
+        {
+            "Name": "Santolan Annapolis Station",
+            "coordinates" : [14.607496535782303, 121.05658583669512]
+        }, 
+        {
+            "Name": "Ortigas Station",
+            "coordinates" : [14.587884030596898, 121.05672494296502]
+        },
+        {
+            "Name": "Shaw Boulevard Station",
+            "coordinates" : [14.581807881398193, 121.05418292043099]
+        },
+        {
+            "Name": "Boni Avenue Station",
+            "coordinates" : [14.573784079170085, 121.04818553322576]
+        },
+        {
+            "Name": "Guadalupe Station",
+            "coordinates" : [14.566931347769977, 121.04554092499848]
+        },
+        {
+            "Name": "Buendia Station",
+            "coordinates" : [14.55508836413639, 121.03439464706184]
+        },
+        {
+            "Name": "Ayala Station",
+            "coordinates" : [14.549573475275071, 121.02832335007369]
+        },
+        {
+            "Name": "Magallanes Station",
+            "coordinates" : [14.542491312207575, 121.01941878138396]
+        },
+        {
+            "Name": "Taft Avenue Station",
+            "coordinates" : [14.537699807729172, 121.0021913874413]
+        }
+    ]
+}
