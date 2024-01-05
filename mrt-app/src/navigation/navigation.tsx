@@ -6,21 +6,41 @@ import { useState } from 'react'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import HomeIndex from '../home/homeIndex'
 
-let derp = "data:image/jpeg;base64,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"
-
 export const Navigation = () => {
     return (   
-        <nav className='bg-white border-gray-200 dark:bg-gray-900'>
-        <ul className=''>
-            {/* <li className='left'> <img src={derp} className='w-20 h-20' alt="logo" /> </li> */}
-            <li className='left'> <a href="/" className='font-family: sans-serif right'> MRT/LRT Train Management System</a></li>               
-            <li> <a className='font-sans'> Home </a></li>
-            <li> <a type="button"> News </a> </li>
-            <li> <a > Contact </a> </li>
-            <li> <a href='stations'> Stations </a> </li>
-            <li className="background-color:red"> <a href="#"> About Us </a> </li>
-        </ul>
-    </nav>
+        <nav className='navbar'>
+  <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
+      <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo"/>
+      <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+  </a>
+  <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+      <button type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</button>
+      <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-sticky" aria-expanded="false">
+        <span className="sr-only">Open main menu</span>
+        <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+  </div>
+  <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+    <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+      <li>
+        <a href="#" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
+      </li>
+      <li>
+        <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
+      </li>
+      <li>
+        <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
+      </li>
+      <li>
+        <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
+      </li>
+    </ul>
+  </div>
+  </div>
+        </nav>
     );
 }
 export default Navigation

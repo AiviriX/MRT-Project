@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import startServer from './server';
+import { establishConnection } from '../db/conn';
+
 const PORT = process.env.PORT || 3000
 //import startServer from 'server';
 
@@ -11,9 +13,15 @@ dotenv.config();
 //intializing the express app 
 const app = express(); 
 
-//using the dependancies
+//using the dependencies
 app.use(helmet()); 
 app.use(cors()); 
 app.use(express.json())
 
-startServer(app);
+//Establishing connection to the database
+establishConnection().then((connection) => {
+  console.log('Connected to database')
+  startServer(app);
+}).catch((err) => {
+  console.log(err)
+})

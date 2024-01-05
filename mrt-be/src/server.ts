@@ -1,53 +1,51 @@
 //Importing Libraries 
 import express from 'express'
 import * as dotenv from 'dotenv';
+import mongoose from 'mongoose';
+
+
+import { StationSchema } from '../db/schemas';
+
 dotenv.config();
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 
+mongoose.connect(process.env.MONGODB_URI || '');
+const Stations = mongoose.model('mrt-3', StationSchema);
 
 const startServer = (app: express.Express) => {
-  //Listing to the app and running it on PORT 5000
+  //Listing to the app and running it on PORT 
   app.listen(PORT, async () => {
-      console.log(`listning on port ${PORT}`)
+      console.log(`listening on port ${PORT}`)
   })
 
-  app.get('/stations/get/:id', (req, res) => {
-    const id = req.params.id
+  // //Get request to display stations
+  // app.get("/", async (req, res) => {
+  //     try {
+  //       const data = await Stations.find({});
+  //       res.json(data);
+  //       res.status(200);
+  //     } catch (err) {
+  //       console.error(err);
+  //       res.status(500).json({ message: "Error connecting to db", err });
+  //     }
+  // });
 
-    
-    res.send(
-    [
-      {
-        id: id,
-        name: 'Taft Avenue',
-        line: 'L1',
-        lat: 14.5378,
-        lng: 120.9998
-      }
-    ]
-    ).status(200);
-    res.send('Hello World!')
-  })
+  app.get("/stations/:stationName", async (req, res) => {
+    try {
+      const param = encodeURIComponent(req.params.stationName);
+      const data = await Stations.find({ name: param });
+      res.json(data);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Error connecting to db", err });
+    }
+  });
 
 
-  app.post('/stations/add', (req, res) => {
-    const stationName = 'kamuning'
-    const coordinates = '[14.6333, 121.0333]'
-    
 
-    res.send(
-    [
-      {
-        stationName: stationName,
-        coordinates: coordinates
-      }
-    ]
-    ).status(200);
-    res.send('Hello World!')
-  }
-  )
 
+  
 }
 
 export default startServer;

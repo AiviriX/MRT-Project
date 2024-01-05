@@ -14,3 +14,16 @@
     text-decoration: none;
     border-radius: 70%;
 }
+
+.border-box {
+    box-sizing: border-box;
+    max-height: 750px;
+    max-width: 600px;
+    padding: 1rem;
+    border-width: 10px;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+    position: center;
+}
