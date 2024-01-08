@@ -26,7 +26,16 @@ const router = createBrowserRouter([
   {
       path: "/stations",
       element: <Stations/>
-  }
+  },
+  {
+      path: "/stations/lrt-1"
+  },
+  {
+      path: "/stations/lrt-2"
+  },
+  {
+    path: "/stations/mrt-3"
+  },
 ])
 
 
