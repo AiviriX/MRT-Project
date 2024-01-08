@@ -43,3 +43,9 @@ body {
     mix-blend-mode: multiply;
 }
 
+.wMessage{
+    font-size: 50px;
+    border-color: white;
+    border-bottom: 2px;
+}
+
