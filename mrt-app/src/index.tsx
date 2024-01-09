@@ -7,7 +7,7 @@ import MRTIndex from './mrt-index';
 import { BrowserRouter, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import HomeIndex from './home/homeIndex';
 import Navigation from './navigation/navigation';
-import AdminPage from './admin/adminPage';
+import AdminPage from './admin/adminDashboard';
 import StationIndex from './stations/station-index';
 import Stations from './stations/station-index';
 import AdminLogin from './admin/adminLogin';

@@ -2,7 +2,6 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import stations from './stations.json'
 
 
-export const mrt3Stations = stations
 
 const MRT3Stations = () => {
     return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import NavigationUser from './navigation/navigation';
-import AdminPage from './admin/adminPage';
+import AdminPage from './admin/adminDashboard';
 import HomeIndex from './home/homeIndex';
 
 import mrt from './res/station.jpg'
