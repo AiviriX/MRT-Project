@@ -4,12 +4,14 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import MRTIndex from './mrt-index';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { BrowserRouter, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import HomeIndex from './home/homeIndex';
 import Navigation from './navigation/navigation';
 import AdminPage from './admin/adminPage';
 import StationIndex from './stations/station-index';
 import Stations from './stations/station-index';
+import AdminLogin from './admin/adminLogin';
+import MRT3Stations from './stations/mrt3/mrt3-stations';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -28,21 +30,27 @@ const router = createBrowserRouter([
       element: <Stations/>
   },
   {
-      path: "/stations/lrt-1"
+      path: "/stations/lrt1"
   },
   {
-      path: "/stations/lrt-2"
+      path: "/stations/lrt2"
   },
   {
-    path: "/stations/mrt-3"
+    path: "/stations/mrt3",
+    element: <MRT3Stations/>
+
   },
+  {
+    path: "/login",
+    element: <AdminLogin/>
+  }
 ])
 
 
 root.render(
   <React.StrictMode>
-        <Navigation/>
-        <RouterProvider router = {router}/>
+    <Navigation/>
+    <RouterProvider router={router}/>
   </React.StrictMode>
 );
 

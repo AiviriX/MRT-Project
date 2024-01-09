@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .topNav img {
     size: 30px;
     position: fixed;
@@ -11,8 +12,14 @@
     background-color: blue;
 }
 
-li { 
-    float: left;
+
+
+.l {
+
+}
+
+.r {
+    float: right;
 }
 
 .right{
