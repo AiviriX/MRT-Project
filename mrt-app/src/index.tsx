@@ -1,17 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Route, Routes, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import MRTIndex from './mrt-index';
-import { BrowserRouter, RouterProvider, createBrowserRouter } from 'react-router-dom';
-import HomeIndex from './home/homeIndex';
 import Navigation from './navigation/navigation';
 import AdminPage from './admin/adminDashboard';
 import StationIndex from './stations/station-index';
-import Stations from './stations/station-index';
-import AdminLogin from './admin/adminLogin';
 import MRT3Stations from './stations/mrt3/mrt3-stations';
+import AdminLogin from './admin/adminLogin';
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -27,7 +26,6 @@ const router = createBrowserRouter([
   },
   {
       path: "/stations",
-      element: <Stations/>
   },
   {
       path: "/stations/lrt1"
@@ -49,8 +47,18 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-    <Navigation/>
-    <RouterProvider router={router}/>
+    <BrowserRouter>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<MRTIndex />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/stations" element={<StationIndex />} />
+        <Route path="/stations/lrt1" />
+        <Route path="/stations/lrt2" />
+        <Route path="/stations/mrt3" element={<MRT3Stations />} />
+        <Route path="/login" element={<AdminLogin />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

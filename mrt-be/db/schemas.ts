@@ -11,4 +11,9 @@ export const UserSchema = new Schema({
     email: String
 })
 
+export const AdminSchema = new Schema({
+    username: String,
+    password: String
+})
+
 export default null
