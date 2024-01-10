@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 
-import { StationSchema } from '../db/schemas';
+import { StationSchema, AdminSchema } from '../db/schemas';
 
 dotenv.config();
 
@@ -19,30 +19,70 @@ const startServer = (app: express.Express) => {
       console.log(`listening on port ${PORT}`)
   })
 
-  // //Get request to display stations
-  // app.get("/", async (req, res) => {
-  //     try {
-  //       const data = await Stations.find({});
-  //       res.json(data);
-  //       res.status(200);
-  //     } catch (err) {
-  //       console.error(err);
-  //       res.status(500).json({ message: "Error connecting to db", err });
-  //     }
-  // });
 
-  app.get("/stations/:stationName", async (req, res) => {
-    try {
-      const param = encodeURIComponent(req.params.stationName);
-      const data = await Stations.find({ name: param });
-      res.json(data);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error connecting to db", err });
-    }
+
+  //Get request to display stations
+  app.get("/stations", async (req, res) => {
+    const data = await Stations.find({  });
+    res.json(data);
+    res.status(200);
   });
 
+  
 
+  // app.get("/stations/", async (req, res) => {
+  //   try {
+  //     // const param = encodeURIComponent(req.params.stationName);
+  //     const data = await Stations.find({  });
+  //     res.json(data);
+  //   } catch (err) {
+  //     console.error(err);
+  //     res.status(500).json({ message: "Error connecting to db", err });
+  //   }
+  // });
+
+
+  const Admin = mongoose.model('admins', AdminSchema);
+  
+  app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    const admin = await Admin.findOne({ 'username':`${username}`, 'password':`${password}` });
+
+    if (!admin) {
+      return res.status(400).json({ message: 'Invalid username or password' });
+    }
+  
+    res.json({ message: 'Login successful' });
+  });
+
+  // app.get('/login', async (req, res) => {
+  //   const admin = await Admin.find({});
+
+  //   if (!admin) {
+  //     return res.status(400).json({ message: 'Invalid username or password' });
+  //   }
+
+  //   res.json(admin)
+  // });
+
+
+  app.get('/stations/add', (req, res) => {
+    const stationName = 'kamuning'
+    const coordinates = '[14.6333, 121.0333]'
+    
+
+    res.send(
+    [
+      {
+        stationName: stationName,
+        coordinates: coordinates
+      }
+    ]
+    ).status(200);
+    res.send('Hello World!')
+  }
+  )
 
 
   
