@@ -18,7 +18,7 @@ export const Navigation = () => {
                     <Link to="/stations/">Stations</Link>
                 </li>
                 <li className='right'>
-                    <Link to="/login">Login</Link>
+                    <Link to="/login/admin">Login</Link>
                 </li>
             </ul>
         </nav>

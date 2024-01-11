@@ -52,11 +52,12 @@ root.render(
       <Routes>
         <Route path="/" element={<MRTIndex />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/register/admin" />
         <Route path="/stations" element={<StationIndex />} />
         <Route path="/stations/lrt1" />
         <Route path="/stations/lrt2" />
         <Route path="/stations/mrt3" element={<MRT3Stations />} />
-        <Route path="/login" element={<AdminLogin />} />
+        <Route path="/login/admin" element={<AdminLogin />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

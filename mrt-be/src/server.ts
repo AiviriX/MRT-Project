@@ -2,11 +2,15 @@
 import express from 'express'
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
-
+import session from 'express-session'
 
 import { StationSchema, AdminSchema } from '../db/schemas';
 
+import adminRouter from './admin';
+
+
 dotenv.config();
+
 
 const PORT = process.env.PORT || 3001
 
@@ -14,6 +18,17 @@ mongoose.connect(process.env.MONGODB_URI || '');
 const Stations = mongoose.model('mrt-3', StationSchema);
 
 const startServer = (app: express.Express) => {
+  app.use("/", adminRouter);
+
+  
+  app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // set to true if your website uses https
+  }));
+
+
   //Listing to the app and running it on PORT 
   app.listen(PORT, async () => {
       console.log(`listening on port ${PORT}`)
@@ -28,46 +43,8 @@ const startServer = (app: express.Express) => {
     res.status(200);
   });
 
-  
 
-  // app.get("/stations/", async (req, res) => {
-  //   try {
-  //     // const param = encodeURIComponent(req.params.stationName);
-  //     const data = await Stations.find({  });
-  //     res.json(data);
-  //   } catch (err) {
-  //     console.error(err);
-  //     res.status(500).json({ message: "Error connecting to db", err });
-  //   }
-  // });
-
-
-  const Admin = mongoose.model('admins', AdminSchema);
-  
-  app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    const admin = await Admin.findOne({ 'username':`${username}`, 'password':`${password}` });
-
-    if (!admin) {
-      return res.status(400).json({ message: 'Invalid username or password' });
-    }
-  
-    res.json({ message: 'Login successful' });
-  });
-
-  // app.get('/login', async (req, res) => {
-  //   const admin = await Admin.find({});
-
-  //   if (!admin) {
-  //     return res.status(400).json({ message: 'Invalid username or password' });
-  //   }
-
-  //   res.json(admin)
-  // });
-
-
-  app.get('/stations/add', (req, res) => {
+  app.get('/stations/debug', (req, res) => {
     const stationName = 'kamuning'
     const coordinates = '[14.6333, 121.0333]'
     
@@ -82,10 +59,7 @@ const startServer = (app: express.Express) => {
     ).status(200);
     res.send('Hello World!')
   }
-  )
-
-
-  
+  )  
 }
 
 export default startServer;
