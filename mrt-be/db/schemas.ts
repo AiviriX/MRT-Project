@@ -13,7 +13,9 @@ export const UserSchema = new Schema({
 
 export const AdminSchema = new Schema({
     username: String,
-    password: String
+    salt: String, 
+    password: String,
+    hash: String
 })
 
 export default null
