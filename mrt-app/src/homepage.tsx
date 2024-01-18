@@ -1,13 +1,12 @@
 import React from 'react';
-import NavigationUser from './navigation/navigation';
-import AdminPage from './admin/adminDashboard';
-import HomeIndex from './home/homeIndex';
+import AdminPage from './admin/dashboard';
 
 import mrt from './res/station.jpg'
 import station from './res/station.jpg'
 
 
-const MRTIndex = () => {
+
+const Homepage = () => {
     return (
         <div className="relative">
             <img src={station} alt="Background" className="w-full h-full object-cover" />
@@ -21,4 +20,4 @@ const MRTIndex = () => {
     );
 }
 
-export default MRTIndex;
+export default Homepage;

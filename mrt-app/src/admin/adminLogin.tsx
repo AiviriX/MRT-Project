@@ -1,17 +1,20 @@
 import React from 'react'
-import StationImage from '../mrt-index';
-import { useNavigate } from 'react-router-dom';
 
+import { useNavigate } from 'react-router-dom';
+import jwt from 'jsonwebtoken'
 
 export const AdminLogin = () => {
     const navigate = useNavigate();
+    const secret = process.env.SESSION_KEY
+    const JWT_SECRET = process.env.SECRET_KEY || '';
 
-    const [username, setUsername] = React.useState('')
-    const [password, setPassword] = React.useState('')
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
     const handleLogin = async () => {
         try {
-            const response = await fetch('http://localhost:5000/login/admin', {
+
+            const response = await fetch('http://localhost:5000/admin/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -21,6 +24,18 @@ export const AdminLogin = () => {
 
             const data = await response.json();
             if (response.ok){
+
+                jwt.sign (
+                    {
+                        username: username,
+                        password: password
+                    },
+                    JWT_SECRET,
+                    {
+                        expiresIn: '1h'
+                    },
+                )
+
                 alert('Login Successful')
             } else {
                 alert('Login Failed')
@@ -32,7 +47,6 @@ export const AdminLogin = () => {
     }
 
     const handleRegister = async () => {
-
         try {
             const response = await fetch('http://localhost:5000/login/admin/register', {
                 method: 'POST',
@@ -53,8 +67,6 @@ export const AdminLogin = () => {
 
         }
     }
-
-
 
     return (
         <div className='flex justify-center items-center h-screen bg-black'>

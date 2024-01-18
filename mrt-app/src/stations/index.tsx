@@ -26,6 +26,7 @@ const Stations = () => {
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
                 crossOrigin="">
             </script>
+            
             <MapContainer center={[14.605711299761166, 121.01869743864975]} zoom={12} scrollWheelZoom={true}
             className='box-border h-32 w-32 p-4 border-4 mx-3 my-3 pos-center z-0'>
                 <TileLayer

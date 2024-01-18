@@ -4,10 +4,10 @@ import { BrowserRouter, Route, Routes, createBrowserRouter } from 'react-router-
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-import MRTIndex from './mrt-index';
-import Navigation from './navigation/navigation';
-import AdminPage from './admin/adminDashboard';
-import StationIndex from './stations/station-index';
+import MRTIndex from './homepage';
+import Navigation from './navigation';
+import AdminPage from './admin/dashboard';
+import StationIndex from './stations';
 import MRT3Stations from './stations/mrt3/mrt3-stations';
 import AdminLogin from './admin/adminLogin';
 
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Navigation />
+      <Navigation/>
       <Routes>
         <Route path="/" element={<MRTIndex />} />
         <Route path="/admin" element={<AdminPage />} />
