@@ -6,10 +6,10 @@ import session from 'express-session'
 import { StationSchema, AdminSchema } from '../db/schemas';
 
 import adminRouter from './admin';
+import cardRouter from './cards';
 
 
 dotenv.config();
-
 
 const PORT = process.env.PORT || 3001
 
@@ -18,6 +18,7 @@ const Stations = mongoose.model('mrt-3', StationSchema)
 
 const startServer = (app: express.Express) => {
   app.use("/", adminRouter);
+  app.use("/", cardRouter)
   
   app.use(session({
     secret: process.env.SECRET_KEY || '',

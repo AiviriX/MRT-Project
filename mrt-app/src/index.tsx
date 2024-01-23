@@ -28,6 +28,8 @@ root.render(
         <Route path="/stations/lrt2" />
         <Route path="/stations/mrt3" element={ <MRT3Stations />} />
         <Route path="/login/admin" element={ <AdminLogin />} />
+        <Route path="/cards/manage" element={ <h1>Manage Cards</h1> } />
+        <Route path="*" element={ <h1>404 Not Found</h1> } />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

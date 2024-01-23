@@ -1,5 +1,12 @@
 import { Schema } from 'mongoose';
 
+export const CardSchema = new Schema({
+    uuid: String,
+    balance: Number,
+    tappedIn: Boolean,
+    sourceStation: String,
+})
+
 export const StationSchema = new Schema({
     stationName: String,
     coordinates: [Number]
