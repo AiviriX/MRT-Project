@@ -6,58 +6,28 @@ import reportWebVitals from './reportWebVitals';
 
 import MRTIndex from './homepage';
 import Navigation from './navigation';
-import AdminPage from './admin/dashboard';
+import AdminDashboard from './admin/dashboard';
 import StationIndex from './stations';
 import MRT3Stations from './stations/mrt3/mrt3-stations';
-import AdminLogin from './admin/adminLogin';
+import AdminLogin from './admin/manageAccount';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-
-const router = createBrowserRouter([
-  {
-      path: "/",
-      element: <MRTIndex/>
-  }, 
-  {
-      path: "/admin",
-      element: <AdminPage/>
-  },
-  {
-      path: "/stations",
-  },
-  {
-      path: "/stations/lrt1"
-  },
-  {
-      path: "/stations/lrt2"
-  },
-  {
-    path: "/stations/mrt3",
-    element: <MRT3Stations/>
-
-  },
-  {
-    path: "/login",
-    element: <AdminLogin/>
-  }
-])
-
 
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Navigation/>
       <Routes>
-        <Route path="/" element={<MRTIndex />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/" element={ <MRTIndex />} />
+        <Route path="/admin/dashboard" element={ <AdminDashboard /> } />
         <Route path="/register/admin" />
-        <Route path="/stations" element={<StationIndex />} />
+        <Route path="/stations" element={ <StationIndex />} />
         <Route path="/stations/lrt1" />
         <Route path="/stations/lrt2" />
-        <Route path="/stations/mrt3" element={<MRT3Stations />} />
-        <Route path="/login/admin" element={<AdminLogin />} />
+        <Route path="/stations/mrt3" element={ <MRT3Stations />} />
+        <Route path="/login/admin" element={ <AdminLogin />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

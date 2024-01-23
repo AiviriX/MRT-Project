@@ -1,10 +1,4 @@
-import React from 'react';
-import AdminPage from './admin/dashboard';
-
-import mrt from './res/station.jpg'
 import station from './res/station.jpg'
-
-
 
 const Homepage = () => {
     return (

@@ -2,9 +2,6 @@ import express from 'express'
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken'
-
-
-
 import crypto from 'crypto';
 
 import { AdminSchema } from '../db/schemas';
@@ -13,7 +10,7 @@ import { AdminSchema } from '../db/schemas';
 const adminRouter = express.Router();
 const Admin = mongoose.model('admins', AdminSchema);;
 
-adminRouter.post('admin/login', async (req, res) => {
+adminRouter.post('/login/admin', async (req, res) => {
     const { username, password } = req.body;
 
     const admin = await Admin.findOne({ 'username':`${username}` });
@@ -23,22 +20,18 @@ adminRouter.post('admin/login', async (req, res) => {
         const hash = crypto.pbkdf2Sync(password, admin.salt, 1000, 64, `sha512`).toString('hex');
         if (hash === admin.hash) {
             const key = process.env.SECRET_KEY || '';
-            
             const token = jwt.sign({ username: req.body.username }, key, { expiresIn: '1h' });
-
             return res.status(200).send({ token: token });
         } else {
-            return res.status(404).json({ message: 'Invalid username or password' });
+            return res.status(400).json({ message: 'Invalid username or password' });
         }
-
-
     } else {
         return res.status(400).json({ message: 'Invalid username or password' });
     }
   
 });
 
-adminRouter.post('/admin/register', async (req, res) => {
+adminRouter.post('/login/admin/register', async (req, res) => {
     const { username, password } = req.body;
 
     // Create a salt
@@ -59,5 +52,10 @@ adminRouter.post('/admin/register', async (req, res) => {
 
     res.status(200).json({ message: 'Registration successful' });
 });
+
+
+adminRouter.get('/login/admin', async (req, res) => {
+    res.status(200).json({ message: 'Admin' });
+})
 
 export default adminRouter;
