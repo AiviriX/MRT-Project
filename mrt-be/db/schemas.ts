@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 
 export const CardSchema = new Schema({
-    uuid: String,
+    uuid: Number,
     balance: Number,
     tappedIn: Boolean,
     sourceStation: String,

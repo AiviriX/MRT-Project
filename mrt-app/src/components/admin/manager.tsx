@@ -2,8 +2,7 @@ import React from 'react'
 
 import { useNavigate } from 'react-router-dom';
 
-import {getSessionToken, SessionChecker} from '../auth/sessionChecker';
-
+import {getSessionToken, SessionChecker} from '../../auth/sessionChecker';
 export const AdminLogin = () => {
     const navigate = useNavigate();
 

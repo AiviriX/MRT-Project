@@ -1,5 +1,5 @@
 import { Component } from "react";
-import AdminDashboard from "../admin/dashboard";
+import AdminDashboard from "../components/admin/dashboard";
 
 export const SessionChecker = (component: Component) => {
     return (props: any) => {
@@ -16,7 +16,6 @@ export const getSessionToken = () => {
     if (localStorage.getItem('token') === null){
         return false;
     } else {
-        console.log(localStorage.getItem('token'))
         return true;
     }
 }

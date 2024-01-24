@@ -13,9 +13,8 @@ export const Navigation = () => {
     }, [])
 
     return (   
-        <nav className='shrink bg-white border-gray-200 dark:bg-gray-900 top-0 z-10 relative'>
-            <ul className='z-19'>
-                <li className='left'>
+        <nav className='flex shrink bg-white border-gray-200 dark:bg-gray-900 top-0 z-10 relative'>
+            <ul className='z-19 sticky list-none m-0 p-0 overflow-hidden bg-blue-900 text-gray-200 fixed w-full'>                <li className='left'>
                     <Link className="shrink w-32" to="/">MRT TMS</Link>
                 </li>
 

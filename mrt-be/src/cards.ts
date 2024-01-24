@@ -1,5 +1,6 @@
 import express from 'express'
 import mongoose from 'mongoose'
+import crypto from 'crypto';
 
 import { CardSchema } from '../db/schemas';
 
@@ -19,21 +20,21 @@ cardRouter.delete('/cards/delete', async (req, res) => {
 });
 
 cardRouter.post('/cards/add', async (req, res) => {
-    const { balance } = req.body;
+    const  { uuid, balance } = req.body;
+    const tappedIn = false;
 
-    //Generate UUID
-    const uuid = Math.floor(Math.random() * 1000000000);
-    const tappedIn = false, tappedOut = false;
-    const card = new Card({
-        uuid,
-        balance,
-        tappedIn,
-        tappedOut
-    });
-
+    if (uuid === undefined || balance === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, balance: `${balance}` });
+    } else {
+        const card = new Card({
+            uuid,
+            balance,
+            tappedIn,
+            sourceStation: ''
+        });
     await card.save();
-
-    res.status(200).json({ message: 'Card added' });
+    res.status(200).json({ message: `Card Added ${ uuid }, ${balance}` });
+    }
 });
 
 export default cardRouter;

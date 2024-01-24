@@ -6,10 +6,11 @@ import reportWebVitals from './reportWebVitals';
 
 import MRTIndex from './homepage';
 import Navigation from './navigation';
-import AdminDashboard from './admin/dashboard';
+import AdminDashboard from './components/admin/dashboard';
 import StationIndex from './stations';
 import MRT3Stations from './stations/mrt3/mrt3-stations';
-import AdminLogin from './admin/manageAccount';
+import AdminLogin from './components/admin/manager';
+import CardManager from './components/cards/manager';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -28,8 +29,8 @@ root.render(
         <Route path="/stations/lrt2" />
         <Route path="/stations/mrt3" element={ <MRT3Stations />} />
         <Route path="/login/admin" element={ <AdminLogin />} />
-        <Route path="/cards/manage" element={ <h1>Manage Cards</h1> } />
-        <Route path="*" element={ <h1>404 Not Found</h1> } />
+        <Route path="/cards/manage" element={ <CardManager/> } />
+        <Route path="*" element={ <h1> 404 Not Found </h1> } />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
