@@ -7,10 +7,11 @@ import reportWebVitals from './reportWebVitals';
 import MRTIndex from './homepage';
 import Navigation from './navigation';
 import AdminDashboard from './components/admin/dashboard';
-import StationIndex from './stations';
-import MRT3Stations from './stations/mrt3/mrt3-stations';
+import StationIndex from './components/stations';
+import MRT3Stations from './components/stations/mrt3/mrt3-stations';
 import AdminLogin from './components/admin/manager';
 import CardManager from './components/cards/manager';
+import Fare from './components/stations/fare';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,13 +22,12 @@ root.render(
     <BrowserRouter>
       <Navigation/>
       <Routes>
-        <Route path="/" element={ <MRTIndex />} />
+        <Route path="/" element={ <MRTIndex /> } />
         <Route path="/admin/dashboard" element={ <AdminDashboard /> } />
         <Route path="/register/admin" />
         <Route path="/stations" element={ <StationIndex />} />
-        <Route path="/stations/lrt1" />
-        <Route path="/stations/lrt2" />
-        <Route path="/stations/mrt3" element={ <MRT3Stations />} />
+        <Route path="/stations/fares" element={ <Fare/> } />
+        {/* <Route path="/stations/mrt3" element={ <MRT3Stations />} /> */}
         <Route path="/login/admin" element={ <AdminLogin />} />
         <Route path="/cards/manage" element={ <CardManager/> } />
         <Route path="*" element={ <h1> 404 Not Found </h1> } />
