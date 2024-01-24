@@ -13,10 +13,14 @@ cardRouter.get('/cards/get', async (req, res) => {
 })
 
 cardRouter.delete('/cards/delete', async (req, res) => {
-    const { uuid } = req.body;
+    const uuid  = req.query.uuid;
     //Make sure to ask if they are sure to delete
-    await Card.deleteOne({ 'uuid': `${uuid}` }); 
-    res.status(200).json({ message: 'Card deleted' });
+    if (uuid === undefined) {
+        return res.status(400).json({ message: 'Unable to delete UUID. Does it exist?' });
+    } else {
+        await Card.deleteOne({ uuid });
+        res.status(200).json({ message: `Deleted ${uuid}` });
+    }
 });
 
 cardRouter.post('/cards/add', async (req, res) => {

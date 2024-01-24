@@ -19,7 +19,7 @@ const CreateCard = () => {
         if (response.ok){
             alert('Card Added Successfully')
         }
-        console.log(data);
+        
     }
 
     const randomizeUUID = () => {
