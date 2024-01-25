@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { removeSessionToken, hasSessionToken } from './auth/sessionTokenManager'
-import { AuthProvider, useAuth } from './auth/auth-context'
 
 export const Navigation = () => {
     const [hasToken, setToken] = useState(hasSessionToken())
@@ -14,8 +13,7 @@ export const Navigation = () => {
         
     }, [hasToken])
 
-    
-    //Handles the instructions to remove the session token
+    //Handles the instructions to remove the session token locally....
     const locRemoveSessionToken = () => {
         removeSessionToken();
         setToken(hasSessionToken());
@@ -32,7 +30,8 @@ export const Navigation = () => {
                         <Link to="/stations/">Stations</Link>
                     </li>
 
-                    { (hasToken) ? (
+                    {
+                    (hasToken) ? (
                         <div>
                             <li onClick={locRemoveSessionToken} className='flex right '>
                                 <Link to='/'> Logout </Link>

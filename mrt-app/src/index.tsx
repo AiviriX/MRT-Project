@@ -12,6 +12,8 @@ import MRT3Stations from './components/stations/mrt3/mrt3-stations';
 import AdminLogin from './components/admin/manager';
 import CardManager from './components/cards/manager';
 import Fare from './components/stations/fare';
+import AuthProvider from './auth/auth-context';
+import NoAccess from './noAccess';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,20 +21,21 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Navigation/>
-      <Routes>
-        <Route path="/" element={ <MRTIndex /> } />
-        <Route path="/admin/dashboard" element={ <AdminDashboard /> } />
-        <Route path="/register/admin" />
-        <Route path="/stations" element={ <StationIndex />} />
-        <Route path="/stations/fares" element={ <Fare/> } />
-        {/* <Route path="/stations/mrt3" element={ <MRT3Stations />} /> */}
-        <Route path="/login/admin" element={ <AdminLogin />} />
-        <Route path="/cards/manage" element={ <CardManager/> } />
-        <Route path="*" element={ <h1> 404 Not Found </h1> } />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Navigation/>
+        <Routes>
+          <Route path="/" element={ <MRTIndex /> } />
+          <Route path="/admin/dashboard" element={ <AdminDashboard /> } />
+          <Route path="/register/admin" />
+          <Route path="/stations" element={ <StationIndex />} />
+          <Route path="/stations/fares" element={ <Fare/> } />
+          {/* <Route path="/stations/mrt3" element={ <MRT3Stations />} /> */}
+          <Route path="/login/admin" element={ <AdminLogin />} />
+          <Route path="/cards/manage" element={ <CardManager/> } />
+          <Route path="/noaccess" element={<NoAccess/>} />
+          <Route path="*" element={ <h1> 404 Not Found </h1> } />
+        </Routes>
+      </BrowserRouter>
   </React.StrictMode>
 );
 

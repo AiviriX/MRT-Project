@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CreateCard from '../cards/createCard';
 import { GetCardList } from './getCardList';
 import CardEntry from './cardEntry';
+import { hasSessionToken } from '../../auth/sessionTokenManager';
 
 export const CardManager = () => {
     interface Card {
@@ -11,6 +13,10 @@ export const CardManager = () => {
 
     const [cards, setCards] = useState<Card[]>([]);
     const [cardAction, setCardAction] = useState('');
+    const navigate = useNavigate();
+
+    //Token Hooks :(
+    const [hasToken, setToken] = useState(hasSessionToken());
 
     //Handle Reload when updating datas
     const [reload, triggerReload] = useState(false);
@@ -32,9 +38,9 @@ export const CardManager = () => {
 
     return (
         <>
-            {/* Ref: http://localhost:3000/cards/manage/edit-card?152782488772 */}
-        
-            <div className="flex">
+         {
+            hasToken ? (
+                <div className="flex">
                 <aside className="w-64 h-screen bg-gray-800 text-white p-6 space-y-6">
                     <h1 className="text-xl font-bold">Card Management</h1>
                     <button
@@ -67,6 +73,12 @@ export const CardManager = () => {
                     </div>
                 </main>
             </div>
+            ) : (
+                navigate('/noaccess')
+            )
+         }
+            {/* Ref: http://localhost:3000/cards/manage/edit-card?152782488772 */}
+    
         </>
     )
 }

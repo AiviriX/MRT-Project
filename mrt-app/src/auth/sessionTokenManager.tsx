@@ -1,15 +1,13 @@
 import { Component } from "react";
-import { useAuth } from "./auth-context";
-// import { useAuth } from "./auth-context";
+import AdminDashboard from "../components/admin/dashboard";
 
-
-export const SessionChecker = (component: Component) => {
+export const hasSession = (component: Component) => {
     return (props: any) => {
         
         if (localStorage.getItem('token') === null){
-
+            return false;
         } else {
-            //Continue whatever u r doing with the protected component
+            return true;
         }
     }
 }
@@ -22,11 +20,14 @@ export const hasSessionToken = () => {
     }
 }
 
-//Removes the session token and logs out the user as well.
 export const removeSessionToken = () => {
     if (hasSessionToken()){
         localStorage.removeItem('token');
-    } 
+        return true;
+    } else {
+        localStorage.removeItem('token');
+        return true;
+    }
 }
 
-export default SessionChecker;
+export default hasSession;
