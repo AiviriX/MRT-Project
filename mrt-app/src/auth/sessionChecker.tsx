@@ -1,13 +1,13 @@
 import { Component } from "react";
 import AdminDashboard from "../components/admin/dashboard";
 
-export const SessionChecker = (component: Component) => {
+export const hasSession = (component: Component) => {
     return (props: any) => {
         
         if (localStorage.getItem('token') === null){
-
+            return false;
         } else {
-            //Continue whatever u r doing with the protected component
+            return true;
         }
     }
 }
@@ -30,4 +30,4 @@ export const removeSession = () => {
     }
 }
 
-export default SessionChecker;
+export default hasSession;
