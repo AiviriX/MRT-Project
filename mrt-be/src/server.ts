@@ -7,7 +7,7 @@ import { StationSchema, AdminSchema } from '../db/schemas';
 
 import adminRouter from './admin';
 import cardRouter from './cards';
-
+import { fareRouter } from './stations';
 
 dotenv.config();
 
@@ -19,6 +19,7 @@ const Stations = mongoose.model('mrt-3', StationSchema)
 const startServer = (app: express.Express) => {
   app.use("/", adminRouter);
   app.use("/", cardRouter)
+  app.use("/", fareRouter)
   
   app.use(session({
     secret: process.env.SECRET_KEY || '',

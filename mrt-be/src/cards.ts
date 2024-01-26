@@ -41,4 +41,16 @@ cardRouter.post('/cards/add', async (req, res) => {
     }
 });
 
+cardRouter.put('/cards/addBalance', async (req, res) => {
+    const { uuid, balance } = req.body;
+    if (uuid === undefined || balance === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, balance: `${balance}` });
+    } else {
+        await Card.updateOne({ uuid }, { balance });
+        console.log(`Updated ${uuid} to ${balance}`)
+        res.status(200).json({ message: `Updated ${uuid} to ${balance}` });
+    }
+}
+);
+
 export default cardRouter;

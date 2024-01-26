@@ -26,4 +26,8 @@ export const AdminSchema = new Schema({
     role: String
 })
 
+export const FareSchema = new Schema({
+    farePerKm: Number,
+})
+
 export default null

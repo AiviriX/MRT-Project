@@ -4,15 +4,32 @@ import { useState, useEffect } from 'react';
 const CreateCard = () => {
     const [uuid, setUUID] = useState(0);
     const [balance, setBalance] = useState(0);
+    const tappedIn = false;
+    const sourceStation = '';
 
 
     const addCard = async () => {
+        if (balance < 0) {
+            alert('Balance cannot be negative')
+            return
+        }
+
+        if (balance > 10000) {
+            alert('Balance cannot be greater than 10000')
+            return
+        }
+
         const response = await fetch('http://localhost:5000/cards/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({uuid, balance}), //Values for the card
+            body: JSON.stringify({
+                uuid,
+                balance,
+                tappedIn,
+                sourceStation
+            }), //Values for the card
         });
 
         const data = await response.json();
@@ -37,7 +54,7 @@ const CreateCard = () => {
                         type="number"
                         value={uuid} 
                         // remove notations & operations
-                        onKeyDown={(evt) => ["e", "E", "+", "-", "."].includes(evt.key) && evt.preventDefault()}
+                        onKeyDown={(evt) => ["e", "E", "+", "."].includes(evt.key) && evt.preventDefault()}
                         onChange={e => setUUID(parseInt(e.target.value))}
                         />
                 <button 

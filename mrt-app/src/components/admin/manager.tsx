@@ -72,7 +72,7 @@ export const AdminLogin = () => {
                 <input className='mb-2 w-full p-2 border rounded' type='text' placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)} />
                 <input className='mb-4 w-full p-2 border rounded' type='password' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} />
                 <div className='flex justify-between'>
-                    <button className='p-2 bg-green-500 text-white rounded' onClick={undefined}>Sign Up</button>
+                    <button className='p-2 bg-green-500 text-white rounded' onClick={handleRegister}>Sign Up</button>
                     <button className='p-2 bg-blue-500 text-white rounded' onClick={handleLogin}>Login</button>
                 </div>
             </div>

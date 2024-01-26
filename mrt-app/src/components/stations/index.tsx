@@ -2,12 +2,11 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import { useState, useEffect } from 'react';
 
 import '../stations/station-styles.css';
-import MRT3Stations from './mrt3/mrt3-stations';
-import mrt3Stations from './mrt3/mrt3-stations';
+
 
 
 const Stations = () => {
-    
+    const [fare, setFare] = useState();
     const [selectedLine, setSelectedLine] = useState(null)
     const [stations, setStations] = useState([]);
 
@@ -17,6 +16,27 @@ const Stations = () => {
         }
     }, [selectedLine])
 
+    useEffect(() => {
+        fetchFare();
+    }, [])
+
+    const fetchFare = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/stations/getFare', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+    
+            const data = await response.json();
+            console.log(data)
+            setFare(data[0].farePerKm)
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
     return (
@@ -38,7 +58,7 @@ const Stations = () => {
                     </MapContainer>
                 </section>
                 <section className='flex-grow'>
-                    <h1> Fare Per KM</h1>
+                    <h1> Fare Per KM {fare} </h1>
                     <select className='w-32'>
                         <option>Select a Train Line</option>
                             <option>LRT-1</option>
