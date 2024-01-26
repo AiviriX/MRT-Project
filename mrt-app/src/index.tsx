@@ -28,7 +28,7 @@ root.render(
           <Route path="/admin/dashboard" element={ <AdminDashboard /> } />
           <Route path="/register/admin" />
           <Route path="/stations" element={ <StationIndex />} />
-          <Route path="/stations/manage" element={ <StationIndex />} />
+          <Route path="/stations/mrt3" element={ <MRT3Stations />} />
           <Route path="/stations/fares" element={ <Fare/> } />
           <Route path="/login/admin" element={ <AdminLogin />} />
           <Route path="/cards/manage" element={ <CardManager/> } />

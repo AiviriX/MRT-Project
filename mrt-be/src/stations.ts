@@ -22,7 +22,7 @@ fareRouter.put('/stations/setFare', async (req, res) => {
 });
 
 
-fareRouter.get('/stations/getFare', async (req, res) => {
+fareRouter.get('/stations/getFare', async (req, res) => {   
     const fare = await Fare.find({});
     res.status(200).json(fare);
 });

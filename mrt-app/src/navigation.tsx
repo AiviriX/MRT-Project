@@ -27,7 +27,7 @@ export const Navigation = () => {
                         <Link className="shrink w-32" to="/">MRT TMS</Link>
                     </li>
                     <li className='right'>
-                        <Link to="/stations/">Stations</Link>
+                        <Link to="/stations/mrt3">Stations</Link>
                     </li>
 
                     {

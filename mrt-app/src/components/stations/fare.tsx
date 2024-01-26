@@ -48,7 +48,9 @@ const Fare: React.FC = () => {
           },
         }}
       > */}
-        <h1 className='text-2xl font-bold mb-4'>Update Fare Per Km</h1>
+        <h1 className='text-2xl font-bold mb-4'>Update fare per KM </h1>
+        {/* <h1 className='text-2xl font-bold mb-4'>Current Fare: {} </h1> */}
+
         <input className='border-2 border-gray-300 p-2 w-full mb-4 rounded-md' type="number" onChange={handleFareChange} />
         <button className='w-full py-2 px-4 bg-green-500 text-white rounded hover:bg-green-700' onClick={handleUpdateFare}>Update Fare</button>
         <button className='w-full py-2 px-4 bg-red-500 text-white rounded hover:bg-red-700 mt-4' onClick={() => setIsModalOpen(false)}>Close</button>

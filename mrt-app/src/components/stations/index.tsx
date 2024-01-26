@@ -32,7 +32,7 @@ const Stations = () => {
             const data = await response.json();
             console.log(data)
             setFare(data[0].farePerKm)
-            return data;
+            return data[0];
         } catch (error) {
             console.log(error);
         }

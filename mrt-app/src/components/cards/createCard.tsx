@@ -19,6 +19,11 @@ const CreateCard = () => {
             return
         }
 
+        if (!uuid || !balance) {
+            alert('Please fill in all fields')
+            return
+        }
+
         const response = await fetch('http://localhost:5000/cards/add', {
             method: 'POST',
             headers: {
