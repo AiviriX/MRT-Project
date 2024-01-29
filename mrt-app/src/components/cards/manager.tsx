@@ -46,9 +46,11 @@ export const CardManager = () => {
             try {
                 const fetchedCards = await getCardList();
                 setCards(fetchedCards);
+
             } catch (error) {   
                 console.log(error);
             }
+            console.log(cards[2])
         }
         // let x = GetCardList();
         // x.then((data) => {
@@ -56,6 +58,7 @@ export const CardManager = () => {
         // });
         refreshCard()
         console.log(cards)
+
     }, [cardAction, reload]);
 
 
@@ -76,12 +79,12 @@ export const CardManager = () => {
                         <button
                             onClick={() => setCardAction('read')}
                             className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                            Read UUID
+                            List UUIDs
                         </button>
                     </aside>    
 
                     <main className="flex-grow px-3 overflow-auto h-screen">
-                        {
+                        {   
                                 cardAction === 'create' ? <CreateCard/> :
                                 cards.map((card, index) => (
                                         <CardEntry

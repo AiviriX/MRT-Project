@@ -27,6 +27,7 @@ const Fare: React.FC = () => {
       }
 
       alert('Fare updated successfully');
+      console.log(isModalOpen)
       setIsModalOpen(false);
     } catch (error) {
       console.error(error);

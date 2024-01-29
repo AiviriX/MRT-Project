@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Route, Routes, createBrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -12,7 +12,6 @@ import MRT3Stations from './components/stations/mrt3/mrt3-stations';
 import AdminLogin from './components/admin/manager';
 import CardManager from './components/cards/manager';
 import Fare from './components/stations/fare';
-import AuthProvider from './auth/auth-context';
 import NoAccess from './noAccess';
 
 const root = ReactDOM.createRoot(

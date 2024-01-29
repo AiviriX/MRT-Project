@@ -15,13 +15,14 @@ export interface CardProps {
 const CardEntry: React.FC<CardProps> = (props) => {
     //UpdateMode is used to determine whether the user is updating the card or not.
     const [updateMode, setUpdateMode] = React.useState(false);
-
+    console.log("Tapped? " + props.tappedIn)
     return (
         <div className='w-full flex justify-between items-center border-y-4 '>
-            <div className='mx-4 my-4 flex-col'>
-                <span>UUID: {props.uuid}</span> <br/>
-                <span>Balance: {props.balance}</span><br/>
-                <span>Tapped In: {props.tappedIn} </span>
+            <div className='mx-4 my-4 flex flex-col'>
+                <span>UUID: {props.uuid}</span>
+                <span>Balance: {props.balance}</span>
+                <span>Tapped In: {props.tappedIn ? 'True' : 'False'} </span>
+                <span>Tapped From: {props.sourceStation ? props.sourceStation:"N/A"}</span>
             </div>
 
 

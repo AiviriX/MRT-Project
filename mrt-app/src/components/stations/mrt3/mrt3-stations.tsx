@@ -5,13 +5,13 @@ import stations from './stations.json'
 
 const MRT3Stations = () => {
     return (
-        <div className="flex justify-between">
+        <>
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
                 integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
                 crossOrigin="">
             </script>
-            <MapContainer center={[14.5047, 121.0297]} zoom={12} scrollWheelZoom={true}
+            <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
             className='box-border h-32 w-32 p-4 border-4 mx-3 my-3 pos-center z-0'>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -97,7 +97,7 @@ const MRT3Stations = () => {
                     </Popup>
                 </Marker>
             </MapContainer>
-        </div>
+        </>
     );
 
 }
