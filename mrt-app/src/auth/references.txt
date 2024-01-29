@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/66383572/react-how-to-change-navbar-dynamically-when-you-are-logged-in
+https://stackoverflow.com/questions/69675357/what-is-the-proper-way-to-do-global-state

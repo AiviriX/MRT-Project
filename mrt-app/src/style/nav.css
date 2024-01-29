@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .topNav img {
     size: 30px;
     position: fixed;
@@ -11,8 +12,14 @@
     background-color: blue;
 }
 
-li { 
-    float: left;
+
+
+.l {
+
+}
+
+.r {
+    float: right;
 }
 
 .right{
@@ -21,15 +28,6 @@ li {
 
 .left {
     float: left;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #3535c2;-color: #dddddd;
-    top: 0;
 }
 
 li a {
@@ -50,8 +48,6 @@ li button{
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    background-color: #2b2a2a;
-
 }
 
 .navbar {

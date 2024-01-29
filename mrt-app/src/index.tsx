@@ -1,39 +1,41 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-import MRTIndex from './mrt-index';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import HomeIndex from './home/homeIndex';
-import Navigation from './navigation/navigation';
-import AdminPage from './admin/adminPage';
-import StationIndex from './stations/station-index';
-import Stations from './stations/station-index';
+import MRTIndex from './homepage';
+import Navigation from './navigation';
+import AdminDashboard from './components/admin/control';
+import StationIndex from './components/stations';
+import MRT3Stations from './components/stations/mrt3/mrt3-stations';
+import AdminLogin from './components/admin/manager';
+import CardManager from './components/cards/manager';
+import Fare from './components/stations/fare';
+import NoAccess from './noAccess';
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const router = createBrowserRouter([
-  {
-      path: "/",
-      element: <MRTIndex/>
-  }, 
-  {
-      path: "/admin",
-      element: <AdminPage/>
-  },
-  {
-      path: "/stations",
-      element: <Stations/>
-  }
-])
-
-
 root.render(
   <React.StrictMode>
+      <BrowserRouter>
         <Navigation/>
-        <RouterProvider router = {router}/>
+        <Routes>
+          <Route path="/" element={ <MRTIndex /> } />
+          <Route path="/admin/control" element={ <AdminDashboard /> } />
+          <Route path="/register/admin" />
+          <Route path="/stations" element={ <StationIndex />} />
+          <Route path="/stations/mrt3" element={ <MRT3Stations />} />
+          <Route path="/stations/fares" element={ <Fare/> } />
+          <Route path="/login/admin" element={ <AdminLogin />} />
+          <Route path="/cards/manage" element={ <CardManager/> } />
+          <Route path="/noaccess" element={<NoAccess/>} />
+          <Route path="/setfare" element={ <Fare/> } />
+          <Route path="*" element={ <h1> 404 Not Found </h1> } />
+        </Routes>
+      </BrowserRouter>
   </React.StrictMode>
 );
 
