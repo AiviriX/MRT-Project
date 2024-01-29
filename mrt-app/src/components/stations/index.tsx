@@ -40,7 +40,7 @@ const Stations = () => {
 
 
     return (
-        <div> 
+        <div className='overflow-hidden'> 
             <div className='flex'>
                 <section className='flex w-1/2 bg-blue-500'>
                     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />

@@ -1,3 +1,8 @@
+//Card UI Hierarchy
+// CardManager --YOU ARE HERE
+//  CardEntry - CardEntry is a component that lists the cards inside the parent UI at the manager.tsx file.
+//      AddBalanceToCard - AddBalanceToCard is a component that allows the user to add balance to the card.
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateCard from '../cards/createCard';
@@ -12,11 +17,9 @@ export interface Card {
 };
 
 export const CardManager = () => {
-
-
     const [cards, setCards] = useState<Card[]>([]);
     const [cardAction, setCardAction] = useState('');
-    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState(''); //Search Query for the cards.
 
     //Token Hooks :(
     const [hasToken, setToken] = useState(hasSessionToken());
@@ -24,19 +27,35 @@ export const CardManager = () => {
     //Handle Reload when updating datas
     const [reload, triggerReload] = useState(false);
 
+    const navigate = useNavigate();
+
     const handleDelete = async (uuid: string) => {
         if (window.confirm('Are you sure you want to delete this card?')) {
             await deleteCard(uuid);
-            triggerReload(!reload);
+            triggerReload(!reload); //Triggers reload everytime this is toggled.
           }
     };
 
+    const refreshCardListFromChild = () => {
+        triggerReload(!reload);
+    }
+
     //Refreshes the list of cards.
     useEffect(() => {
-        let x = GetCardList();
-        x.then((data) => {
-            setCards(data);
-        });
+        const refreshCard = async () => {
+            try {
+                const fetchedCards = await getCardList();
+                setCards(fetchedCards);
+            } catch (error) {   
+                console.log(error);
+            }
+        }
+        // let x = GetCardList();
+        // x.then((data) => {
+        //     setCards(data);
+        // });
+        refreshCard()
+        console.log(cards)
     }, [cardAction, reload]);
 
 
@@ -45,8 +64,9 @@ export const CardManager = () => {
         <>
          {
             hasToken ? (
-                <div className="flex">
-                    <aside className="w-64 h-screen bg-gray-800 text-white p-6 space-y-6">
+                
+                <div className="flex h-screen overflow-hidden">
+                    <aside className="w-64 h-auto bg-gray-800 text-white p-6 space-y-6">
                         <h1 className="text-xl font-bold">Card Management</h1>
                         <button
                             onClick={() => setCardAction('create')}
@@ -58,38 +78,38 @@ export const CardManager = () => {
                             className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                             Read UUID
                         </button>
-                    </aside>
+                    </aside>    
 
-                <main className="flex-grow p-6 overflow-auto h-screen">
-                    <div className=''>                        {
-                            cardAction === 'create' ? <CreateCard/> :
-                            cards.map((card, index) => (
-                                <>
-                                    <CardEntry
-                                        key={index}
-                                        uuid={card.uuid}
-                                        tappedIn={card.tappedIn}
-                                        balance={card.balance}
-                                        handleDelete={handleDelete}
-                                    />                                    
-                                </>
+                    <main className="flex-grow px-3 overflow-auto h-screen">
+                        {
+                                cardAction === 'create' ? <CreateCard/> :
+                                cards.map((card, index) => (
+                                        <CardEntry
+                                            key={card.uuid}
+                                            uuid={card.uuid}
+                                            tappedIn={card.tappedIn}
+                                            balance={card.balance}
+                                            handleDelete={handleDelete}
+                                            handleRefresh={refreshCardListFromChild}
+                                        />                                    
+                                    
 
-                            )) 
-                        }
-                    </div>
-                </main>
-            </div>
+                                )) 
+                            }
+
+                    </main>
+                </div>
             ) : (
                 navigate('/noaccess')
             )
          }
             {/* Ref: http://localhost:3000/cards/manage/edit-card?152782488772 */}
-    
         </>
     )
 }
 
 
+//Handles the deletion of cards/
 export const deleteCard = async (uuid: string) => {
     try {
         const response = await fetch(`http://localhost:5000/cards/delete?uuid=${uuid}`, {
@@ -109,6 +129,7 @@ export const deleteCard = async (uuid: string) => {
     }
 }
 
+//Sets the balance {and uuid} instead of adding balance to the cards.
 export const updateCard = async (uuid: string, balance: number) => {
     try {
         const response = await fetch(`http://localhost:5000/manage/cards/update?uuid=${uuid}`, {
@@ -128,8 +149,8 @@ export const updateCard = async (uuid: string, balance: number) => {
     }
 }
 
-
-export const GetCardList = async () => {   
+//Returns the json of the cards fetched from mongodb.
+export const getCardList = async () => {   
     try {
         const response = await fetch('http://localhost:5000/cards/get', {
             method: 'GET',
@@ -137,7 +158,6 @@ export const GetCardList = async () => {
                 'Content-Type': 'application/json'
             },
         });
-
         const data = await response.json();
         return data;
     } catch (error) {
@@ -146,5 +166,28 @@ export const GetCardList = async () => {
 
 }
 
+//Handles the addition of balance to the card.
+//Returns true or false since it is called in the addBalanceComponent.tsx
+//True if the balance is added successfully, false if not.
+export const handleAddBalance = async (inputUuid : String, newBalance: Number) => {
+    try {
+      const response = await fetch(`http://localhost:5000/cards/addBalance`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ uuid: inputUuid, balance: newBalance})
+      });
+
+    
+      if (response.ok) {
+        return true
+    } else if (!response.ok){
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+}
 
 export default CardManager

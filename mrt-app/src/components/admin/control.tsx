@@ -25,23 +25,22 @@ const AdminDashboard = () => {
         }
     };
 
-      useEffect(() => {
-        renderAction()
-        }, [action])
+    useEffect(() => {
+       renderAction()
+    }, [action])
 
     return (
         <>
-
         {
             hasToken ? (
-                <div className="flex justify-bet  space-y-4">
+                <div className="flex justify-bet h-screen">
                     <aside className="flex flex-col w-64 items-center h-screen bg-gray-800 text-white p-6 space-y-6">
                     <h1 className="text-xl font-bold cursor-pointer" onClick={()=>setAction('overview')}>Admin Control</h1>
                         <button 
                             onClick={()=>setAction('cards')}
                             className='shrink w-64 bg-black-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded'>
                                  Manage Cards
-                         </button>
+                        </button>
                         <button 
                             onClick={()=>setAction('fare')}
                             className='shrink w-64 bg-black-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded'>
@@ -52,24 +51,10 @@ const AdminDashboard = () => {
                             className='shrink w-64 bg-black-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded'>
                                  Manage Stations
                         </button>
-
-                        {/* <h1 className="text-xl font-bold">Card Management</h1>
-                        <button
-                            // onClick={() => setCardAction('create')}
-                            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Create UUID
-                        </button>
-                        <button
-                            // onClick={() => setCardAction('read')}
-                            className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                            Read UUID
-                        </button> */}
                     </aside>
 
-                    <main className="flex-grow p-8 overflow-auto h-screen border-8">
-                        <div className=''>
+                    <main className="flex-grow overflow-hidden h-screen border-2">
                            {renderAction()}
-                        </div>
                     </main>
                 </div>
             ) : (

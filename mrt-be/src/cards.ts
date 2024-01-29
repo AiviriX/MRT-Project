@@ -8,7 +8,7 @@ const cardRouter = express.Router();
 const Card = mongoose.model('cards', CardSchema);
 
 cardRouter.get('/cards/get', async (req, res) => {
-    const cards = await Card.find({});
+    const cards = await Card.find({});  
     res.status(200).json(cards);
 })
 

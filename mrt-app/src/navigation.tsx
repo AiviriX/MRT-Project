@@ -37,7 +37,7 @@ export const Navigation = () => {
                                 <Link to='/'> Logout </Link>
                             </li>
                             <li className='flex right'>
-                                <Link to="/admin/dashboard"> Admin Control </Link>
+                                <Link to="/admin/control"> Admin Control </Link>
                             </li>
                         </div>                    
                     ) : (

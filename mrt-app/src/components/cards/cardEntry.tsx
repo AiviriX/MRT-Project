@@ -1,7 +1,7 @@
+//This component holds the card information and the card actions.
+
 import React from 'react';
-import UpdateCard from './updateCard';
-
-
+import AddBalanceToCard from './addBalanceToCard';
 
 export interface CardProps {
     uuid: string;
@@ -9,10 +9,11 @@ export interface CardProps {
     tappedIn: boolean;
     sourceStation?: string;
     handleDelete: (uuid: string) => void;
+    handleRefresh: () => void;
 }
 
 const CardEntry: React.FC<CardProps> = (props) => {
-
+    //UpdateMode is used to determine whether the user is updating the card or not.
     const [updateMode, setUpdateMode] = React.useState(false);
 
     return (
@@ -26,26 +27,26 @@ const CardEntry: React.FC<CardProps> = (props) => {
 
             <div className='flex flex-col'>               
                 <div className='flex space-x-1'>
-                {/* <button 
-                    onClick={()=>setUpdateMode(!updateMode)}
-                    className='p-2 bg-blue-500 text-white rounded'>
-                    {updateMode ? 'Cancel' : 'Update'}
-                </button> */}
-
-                    {updateMode ? null : 
+                    {
+                     updateMode ? null : 
+                     <>
                         <button 
                             onClick={() => setUpdateMode(true)}
                             className='p-2 bg-green-500 text-white rounded'>
                             Update Card
                         </button>
+                    </>
                     }                
-                    {updateMode ? <UpdateCard
+                    {
+                     updateMode ? <AddBalanceToCard
                                     uuid={props.uuid}
                                     balance={props.balance}
                                     tappedIn={props.tappedIn}
                                     sourceStation=''
-                                    /> : null}
-                    <button 
+                                    handleRefresh={props.handleRefresh}
+                                    /> : null
+                    }
+                        <button 
                         onClick={()=>props.handleDelete(props.uuid)}
                         className='p-2 bg-red-500 text-white rounded'>Delete</button>
                 </div>

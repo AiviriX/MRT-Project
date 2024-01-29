@@ -1,4 +1,4 @@
-import React from 'react';
+//This component is used to create the card only.
 import { useState, useEffect } from 'react';
 
 const CreateCard = () => {
@@ -24,24 +24,27 @@ const CreateCard = () => {
             return
         }
 
-        const response = await fetch('http://localhost:5000/cards/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                uuid,
-                balance,
-                tappedIn,
-                sourceStation
-            }), //Values for the card
-        });
-
-        const data = await response.json();
-        if (response.ok){
-            alert('Card Added Successfully')
+        try {
+            const response = await fetch('http://localhost:5000/cards/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    uuid,
+                    balance,
+                    tappedIn,
+                    sourceStation
+                }), //Values for the card
+            });
+    
+            const data = await response.json();
+            if (response.ok){
+                alert('Card Added Successfully')
+            }
+        } catch (error) {
+            console.log(error);
         }
-        
     }
 
     const randomizeUUID = () => {

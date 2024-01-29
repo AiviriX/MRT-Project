@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 import MRTIndex from './homepage';
 import Navigation from './navigation';
-import AdminDashboard from './components/admin/dashboard';
+import AdminDashboard from './components/admin/control';
 import StationIndex from './components/stations';
 import MRT3Stations from './components/stations/mrt3/mrt3-stations';
 import AdminLogin from './components/admin/manager';
@@ -25,7 +25,7 @@ root.render(
         <Navigation/>
         <Routes>
           <Route path="/" element={ <MRTIndex /> } />
-          <Route path="/admin/dashboard" element={ <AdminDashboard /> } />
+          <Route path="/admin/control" element={ <AdminDashboard /> } />
           <Route path="/register/admin" />
           <Route path="/stations" element={ <StationIndex />} />
           <Route path="/stations/mrt3" element={ <MRT3Stations />} />
