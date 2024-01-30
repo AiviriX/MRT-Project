@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal'
 import { useParams } from 'react-router-dom';
-import { Card, getCardList } from './manager';
+import { CardData, getCardList } from './manager';
 import { handleAddBalance } from './manager';
 
 Modal.setAppElement('#root');
@@ -17,8 +17,10 @@ interface UpdateCardProps {
 
 
 export const AddBalanceToCard: React.FC<UpdateCardProps> = ({ uuid, balance, tappedIn, sourceStation, handleRefresh }) => {
+  const [isSuccessModalOpen, setSuccessModal] = useState(false);
   const [newBalance, setNewBalance] = useState(balance); //Pass newBalance to handleAddBalance as a parameter to update the balance.
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBalanceModalOpen, setIsBalanceModal] = useState(false);
+  const [isFailureModalOpen, setFailModal] = useState(false);
 
   //Gets the value of the input field for adding balance, and sets it as the new balance.
   const getBalanceInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,24 +29,31 @@ export const AddBalanceToCard: React.FC<UpdateCardProps> = ({ uuid, balance, tap
     }
   };
 
-  const callAddBalance = async (uuid: String, newBalance: Number) => {
-    if (await handleAddBalance(uuid, newBalance)) {
-      alert('Balance added successfully');
-      setIsModalOpen(false);
-      //Now apply refresh logic here to update the cards list
-      handleRefresh();
+  const callAddBalance = async (uuid: String, newBalance: number) => {
+    if (newBalance < 0) {
+      alert('Balance cannot be negative')
+      return
+    }
 
-      // const updatedCards = await getCardList();
-      // setCards(updatedCards);
+    if (balance > 10000) {
+      alert('Balance cannot be greater than 10000')
+      return
+    }
+    
+    if (await handleAddBalance(uuid, newBalance)) {
+      setIsBalanceModal(false);
+      setSuccessModal(true);
+      handleRefresh();
     } else {
-      alert('Balance add failed')
+      setSuccessModal(false);
+      setFailModal(true);
     }
   }
 
   return (
     <div className='flex space-x-1'>   
       <button className='w-32 h-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-       onClick={() => setIsModalOpen(true)}>Add Balance
+       onClick={() => setIsBalanceModal(true)}>Add Balance
       </button>
 
       <button className=' h-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
@@ -56,8 +65,8 @@ export const AddBalanceToCard: React.FC<UpdateCardProps> = ({ uuid, balance, tap
       </button>
 
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={isBalanceModalOpen}
+        onRequestClose={() => setIsBalanceModal(false)}
         contentLabel="Add Balance Modal"
         style={{
             content: {
@@ -84,14 +93,51 @@ export const AddBalanceToCard: React.FC<UpdateCardProps> = ({ uuid, balance, tap
                   Confirm Add balance 
             </button>
             <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => setIsBalanceModal(false)}
                 className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Close
             </button>
         </div>
 
       </Modal>
-    </div>
+
+      
+      <Modal
+        isOpen={isSuccessModalOpen}
+        onRequestClose={() => {}}
+        contentLabel="Success Modal"
+        style={{
+          content: {
+            width: '500px', // Set the width of the modal
+            height: '300px', // Set the height of the modal
+            margin: 'auto', // Center the modal on the page
+          },
+        }}
+      >
+        <p>Balance added successfully</p>
+        <button className='w-32 h-10 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'
+        onClick={() => setSuccessModal(false)}>OK
+        </button>
+      </Modal>
+
+      <Modal
+        isOpen={isFailureModalOpen}
+        onRequestClose={() => {}}
+        contentLabel="Failure Modal"
+        style={{
+          content: {
+            width: '500px', // Set the width of the modal
+            height: '300px', // Set the height of the modal
+            margin: 'auto', // Center the modal on the page
+          },
+        }}
+      >
+        <p>Balance add failed</p>
+        <button className='w-32 h-10 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded'
+        onClick={() => setFailModal(false)}>OK
+        </button>
+    </Modal>
+      </div>
   );
 };
 

@@ -15,7 +15,6 @@ export interface CardProps {
 const CardEntry: React.FC<CardProps> = (props) => {
     //UpdateMode is used to determine whether the user is updating the card or not.
     const [updateMode, setUpdateMode] = React.useState(false);
-    console.log("Tapped? " + props.tappedIn)
     return (
         <div className='w-full flex justify-between items-center border-y-4 '>
             <div className='mx-4 my-4 flex flex-col'>
