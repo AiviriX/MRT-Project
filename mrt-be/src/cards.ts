@@ -12,6 +12,16 @@ cardRouter.get('/cards/get', async (req, res) => {
     res.status(200).json(cards);
 })
 
+cardRouter.get('/cards/getOne', async (req, res) => {
+    const uuid = req.query.uuid;
+    if (uuid === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}` });
+    } else {
+        const card = await Card.findOne({ uuid });
+        res.status(200).json(card);
+    }
+});
+
 cardRouter.delete('/cards/delete', async (req, res) => {
     const uuid  = req.query.uuid;
     //Make sure to ask if they are sure to delete
@@ -52,5 +62,32 @@ cardRouter.put('/cards/addBalance', async (req, res) => {
     }
 }
 );
+
+cardRouter.put('/cards/tapIn', async (req, res) => {
+    const { uuid, sourceStation } = req.body;
+    if (uuid === undefined || sourceStation === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, sourceStation: `${sourceStation}` });
+    } else {
+        await Card.updateOne({ uuid }, { tappedIn: true, sourceStation });
+        res.status(200).json({ message: `Tapped in ${uuid} at ${sourceStation}` });
+    }
+});
+
+// cardRouter.put('/cards/tapOut', async (req, res) => {
+//     const { uuid, destinationStation } = req.body;
+//     if (uuid === undefined || destinationStation === undefined) {
+//         return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, destinationStation: `${destinationStation}` });
+//     } else {
+//         try {
+//             const card = await Card.findOne({ uuid });
+//             const fare = card.calculateFare(destinationStation);
+//             const balance = card.balance - fare;
+//             await Card.updateOne({ uuid }, { tappedIn: false, balance });
+//             res.status(200).json({ message: `Tapped out ${uuid} at ${destinationStation}. Fare: ${fare}` });
+//         } catch (err) {
+//             res.status(400).json({ message: `Error: ${err}` });
+//         }
+//     } 
+// });
 
 export default cardRouter;
