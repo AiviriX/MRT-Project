@@ -1,3 +1,4 @@
+//stations/fare.tsx
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
@@ -46,5 +47,22 @@ const Fare: React.FC = () => {
     </div>
   );
 };
+
+export const getFare = async () => {
+  try {
+      const response = await fetch('http://localhost:5000/stations/getFare', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+      });
+
+      const data = await response.json();
+      //console.log(data)
+      return data[0];
+  } catch (error) {
+      console.log(error);
+  }
+}
 
 export default Fare;

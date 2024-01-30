@@ -1,6 +1,22 @@
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import stations from './stations.json'
+import { Polyline } from 'react-leaflet';
 
+const positions: [number, number][] = [
+    [14.652208254624389, 121.03234323138653], //NA
+    [14.643348953836682, 121.03796281550703], //QA
+    [14.635222115280635, 121.04333937202267], //GMA
+    [14.619525829473252, 121.05111117373505], //AC
+    [14.607496535782303, 121.05658583669512], //SA
+    [14.587884030596898, 121.05672494296502], //OS
+    [14.581807881398193, 121.05418292043099], //SB
+    [14.573784079170085, 121.04818553322576],
+    [14.566931347769977, 121.04554092499848],
+    [14.55508836413639, 121.03439464706184],
+    [14.549573475275071, 121.02832335007369],
+    [14.542491312207575, 121.01941878138396],
+    [14.537699807729172, 121.0021913874413],
+  ];
 
 
 const MRT3Stations = () => {
@@ -17,6 +33,8 @@ const MRT3Stations = () => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                
+            <Polyline positions={positions} color='red' />
 
                 {/*TODO Add to json late her */}
                 <Marker position={[14.652208254624389, 121.03234323138653]}>
