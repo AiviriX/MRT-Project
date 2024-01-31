@@ -5,6 +5,9 @@ import CreateStation from './createStation';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import MRT3Stations from './mrt3/mrt3-stations';
 
+//import url from index
+import { API_URL } from '../../index';
+
 type Station = {
   name: string;
   position: [number, number];
@@ -17,13 +20,14 @@ const StationsManager = () => {
   ]);
 
 
-  const [stationAction, setStationAction] = useState<string>('');
-
+  const [stationAction, setStationAction] = useState('');
   const [trainLine, setTrainLine] = useState('');
+  
 
-const handleTrainLineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  setTrainLine(event.target.value);
-};
+
+  const handleTrainLineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setTrainLine(event.target.value);
+  };
 
   const deleteStation = (name: string) => {
     setStations(prevStations => prevStations.filter(station => station.name !== name));
@@ -35,21 +39,23 @@ const handleTrainLineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     }
   }
 
-  const renderAction = () => {
-    if (stationAction === 'create') {
-      return <CreateStation/>
-    }
-
-    if (stationAction === 'read') {
-      return stations.map((station, index) => (
-        <StationEntry key={index} name={station.name} position={station.position} handleDelete={deleteStation} handleRefresh={() => {}} />
-      ));
-    }
-  };
-
   useEffect(() => {
-    renderAction();
-  }, [stationAction, stations]);
+    const renderAction = () => {
+      if (stationAction === 'create') {
+        return <CreateStation isOpen={true} onRequestClose={() => setStationAction('')}/>;
+      }
+  
+      if (stationAction === 'read') {
+        return stations.map((station, index) => (
+          <StationEntry key={index} name={station.name} position={station.position} handleDelete={deleteStation} handleRefresh={() => {}} />
+        ));
+      }
+    };
+
+    renderAction()
+  },[stationAction])
+
+
 
   return (
 
@@ -58,14 +64,14 @@ const handleTrainLineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         <aside className="w-64 h-auto bg-gray-800 text-white p-6 space-y-6">
             <h1 className="text-xl font-bold">Stations Manager</h1>
             <button
-            onClick={() => setStationAction('create')}
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Create Station
+              onClick={() => setStationAction('create')}
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Create Station
             </button>
             <button
-            onClick={() => setStationAction('read')}
-            className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            List Stations
+              onClick={() => setStationAction('read')}
+              className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+              List Stations
             </button>
         </aside>
         <div className='bg-blue-500'>
@@ -110,8 +116,32 @@ const handleTrainLineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
                 </div>
             </div>
         </section>
+        <section>
+        <div className='bg-blue-500'>
+            <main className="flex-grow overflow-auto h-screen">
+                {stationAction === 'create' && <CreateStation isOpen={true} onRequestClose={() => setStationAction('')}/>} {/* Render CreateStation when stationAction is 'create' */}
+            </main>
+        </div>
+        </section>
     </div>
   );
 };
+
+const createStation = async (station: Station) => {
+  try {
+    const response = await fetch(`${API_URL}/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(station),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert('Station Added Successfully');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
 
 export default StationsManager;

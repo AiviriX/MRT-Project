@@ -1,6 +1,9 @@
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import stations from './stations.json'
 import { Polyline } from 'react-leaflet';
+import { useState } from "react";
+import { LatLng } from "leaflet";
+
 
 const positions: [number, number][] = [
     [14.652208254624389, 121.03234323138653], //NA
@@ -10,16 +13,55 @@ const positions: [number, number][] = [
     [14.607496535782303, 121.05658583669512], //SA
     [14.587884030596898, 121.05672494296502], //OS
     [14.581807881398193, 121.05418292043099], //SB
-    [14.573784079170085, 121.04818553322576],
-    [14.566931347769977, 121.04554092499848],
-    [14.55508836413639, 121.03439464706184],
-    [14.549573475275071, 121.02832335007369],
-    [14.542491312207575, 121.01941878138396],
-    [14.537699807729172, 121.0021913874413],
+    [14.573784079170085, 121.04818553322576], //BA
+    [14.566931347769977, 121.04554092499848], //GU
+    [14.55508836413639, 121.03439464706184], //BU
+    [14.549573475275071, 121.02832335007369], //AY
+    [14.542491312207575, 121.01941878138396], //MA
+    [14.537699807729172, 121.0021913874413], //TA
   ];
+
+  export const MapEvents = () => {
+    const map = useMapEvents({
+        click(e) {
+            // Handle map click event here
+            const {lat, lng} = e.latlng
+            console.log(`Map clicked at coordinates: ${lat}, ${lng}`)
+            
+        },
+        locationfound: (location) => {
+            // Handle location found
+            console.log(location)
+            map.flyTo(location.latlng, map.getZoom())
+        }
+    });
+    return null;
+}
+
 
 
 const MRT3Stations = () => {
+    const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
+
+
+    const MapEvents = () => {
+        const map = useMapEvents({
+            click(e) {
+                // Handle map click event here
+                const {lat, lng} = e.latlng
+                console.log(`Map clicked at coordinates: ${lat}, ${lng}`)
+                setMarkerPosition(e.latlng);
+                console.log(markerPosition)
+            },
+            // locationfound: (location) => {
+            //     // Handle location found
+            //     console.log(location)
+            //     map.flyTo(location.latlng, map.getZoom())
+            // }
+        });
+        return null;
+    }
+
     return (
         <>
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
@@ -33,7 +75,7 @@ const MRT3Stations = () => {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                
+            <MapEvents/>
             <Polyline positions={positions} color='red' />
 
                 {/*TODO Add to json late her */}

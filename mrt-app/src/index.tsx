@@ -9,10 +9,12 @@ import Navigation from './navigation';
 import AdminDashboard from './components/admin/control';
 import StationIndex from './components/stations';
 import MRT3Stations from './components/stations/mrt3/mrt3-stations';
-import AdminLogin from './components/admin/manager';
+import AdminLogin from './components/admin/login';
 import CardManager from './components/cards/manager';
 import Fare from './components/stations/fare';
 import NoAccess from './noAccess';
+
+export const API_URL = 'http://localhost:5000';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

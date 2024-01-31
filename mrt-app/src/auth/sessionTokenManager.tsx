@@ -1,5 +1,4 @@
 import { Component } from "react";
-import AdminDashboard from "../components/admin/control";
 
 export const hasSession = (component: Component) => {
     return (props: any) => {

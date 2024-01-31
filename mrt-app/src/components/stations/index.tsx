@@ -1,5 +1,5 @@
 //stations/index.tsx
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import { useState, useEffect, Component } from 'react';
 import MRT3Stations from './mrt3/mrt3-stations';
 import { CardData, getOneCard } from '../cards/manager';
@@ -8,16 +8,16 @@ import '../stations/station-styles.css';
 import { getFare } from './fare';
 import CardEntry from '../cards/cardEntry';
 
+
 const Stations = () => {
     const [fare, setFare] = useState();
     const [selectedLine, setSelectedLine] = useState('')
 
     const [searchUUID, setSearchUUID] = useState('');
     const [searchCardEntry, setSearchCardEntry] = useState<CardData | null | undefined>();
-
     const [selectedStation, setSelectedStation] = useState();
-
     const [stations, setStations] = useState(<Component/>);
+    const [clickedPosition, setClickedPosition] = useState<[number, number] | null>(null);
 
     useEffect(() => {
         if (selectedLine === 'MRT-3') {
@@ -30,6 +30,7 @@ const Stations = () => {
         getFareAndUpdateUI();
     }, [])
 
+
     const getCard = async (uuid: string) => {
         try {
             const fetchedCard = await getOneCard(uuid);
@@ -40,10 +41,11 @@ const Stations = () => {
         }
     }
 
-    // useEffect(() => {
-    //     getCard();
-    // }
-    // , [searchUUID])
+    const onMapClick = (coords: [number, number]) => {
+        // Handle map click event here
+        console.log(`Map clicked at coordinates: ${coords}`);
+    };
+
 
     
 
@@ -73,8 +75,11 @@ const Stations = () => {
 
                     {
                     selectedLine === 'MRT-3' ? <MRT3Stations/> : 
-                    <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
-                    className='box-border h-32 w-32 p-4 border-4 mx-3 my-3 pos-center z-0'>
+                    <MapContainer
+                        center={[14.60773659867783, 121.0266874139731]}
+                        zoom={12} scrollWheelZoom={true}
+                        className='box-border h-32 w-32 p-4 border-4 mx-3 my-3 pos-center z-0'
+                        >
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -82,14 +87,6 @@ const Stations = () => {
                     </MapContainer>
                     
                     }
-                    
-                    {/* <MapContainer center={[14.605711299761166, 121.01869743864975]} zoom={12} scrollWheelZoom={true}
-                    className='box-border h-full w-full p-4 border-4 mx-3 my-3 pos-center z-0'>
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                    </MapContainer> */}
                 </section>
 
                 <section className='flex flex-col items-center w-full space-y-1'>

@@ -1,11 +1,9 @@
 //admin/manager.tsx
-import React, { useState } from 'react'
-
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { hasSessionToken } from '../../auth/sessionTokenManager';
-// import { getSessionToken } from '../../auth/sessionTokenManager';
-
-// import AuthProvider, { useAuth } from '../../auth/auth-context';
+const urlEndpoint = process.env.SECRET_KEY;
+console.log(urlEndpoint)
 
 export const AdminLogin = () => {
     const navigate = useNavigate();    
@@ -32,7 +30,7 @@ export const AdminLogin = () => {
                 localStorage.setItem('token', data.token);
                 if (localStorage.getItem('token') === data.token){
                     alert('Login Successful')
-                    navigate('/admin/dashboard')
+                    navigate('/admin/control')
                 }
             } else {
                 alert('Login Failed')

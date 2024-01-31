@@ -4,8 +4,6 @@ import { hasSessionToken } from '../../auth/sessionTokenManager';
 import { useNavigate } from 'react-router-dom';
 import CardManager from '../cards/manager';
 import Fare from '../stations/fare';
-import Stations from '../stations';
-import MRT3Stations from '../stations/mrt3/mrt3-stations';
 import StationsManager from '../stations/manager';
 
 const AdminDashboard = () => {
