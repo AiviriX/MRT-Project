@@ -4,16 +4,18 @@ import StationEntry from './stationEntry'; // Import the StationEntry component
 import CreateStation from './createStation';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import MRT3Stations from './mrt3/mrt3-stations';
-
-//import url from index
 import { API_URL } from '../../index';
+import StationData from './stationData';
+
+
 
 type Station = {
   name: string;
   position: [number, number];
 };
 
-const StationsManager = () => {
+
+export const StationsManager = () => {
   const [stations, setStations] = useState<Station[]>([
     // { name: 'Station 1', position: [14.635222115280635, 121.04333937202267] },
     // // Add more initial stations here...
@@ -22,7 +24,7 @@ const StationsManager = () => {
 
   const [stationAction, setStationAction] = useState('');
   const [trainLine, setTrainLine] = useState('');
-  
+  const [selectedMarker, setSelectedMarker] = useState({} as StationData);
 
 
   const handleTrainLineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -35,7 +37,7 @@ const StationsManager = () => {
 
   const renderTrainMap = () => {
     if (trainLine === 'MRT-3') {
-      return <MRT3Stations/>;
+      return <MRT3Stations setSelectedMarker={setSelectedMarker} />;
     }
   }
 
@@ -84,14 +86,6 @@ const StationsManager = () => {
                     </script>
                     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
                     {renderTrainMap()}
-                    {/* <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
-                        className='box-border h-32 w-32 p-4 border-4 mx-3 my-3 pos-center z-0'>
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                    {}
-                    </MapContainer> */}
             </main>
     </div>
 
@@ -110,10 +104,16 @@ const StationsManager = () => {
 
                 <div className='mb-8 justify-center'>
                     <h2 className='font-bold text-2xl mb-2'> Selected Station </h2>
-                    <h1> No Station Selected </h1>
-                    {/* <p> Station Name: {} </p>
-                    <p> Station ID: {} </p> */}
-                    {/* Add more station details as needed */}
+                    {
+                      selectedMarker && selectedMarker.coordinates ?
+                        <div>
+                          <h1> {selectedMarker.stationName} </h1> 
+                          <h2> Latitude {selectedMarker.coordinates[0]} </h2>
+                          <h2> Longitude {selectedMarker.coordinates[1]} </h2>
+                        </div> 
+                      :
+                       <h1> No Station Selected </h1>
+                    }
                 </div>
             </div>
         </section>

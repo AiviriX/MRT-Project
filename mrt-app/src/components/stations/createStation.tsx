@@ -3,6 +3,8 @@ import Modal from 'react-modal';
 
 import { API_URL } from '../..';
 
+//Select stations when marker is clicked
+
 interface CreateStationProps {
     isOpen: boolean;
     onRequestClose: () => void;

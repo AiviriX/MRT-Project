@@ -7,16 +7,22 @@ import CreateStation from "../createStation";
 import { getStation } from "../manager";
 import StationData from "../stationData";
 
+export interface RetrieveMarker {
+    marker?: StationData;
+    setSelectedMarker?: (markerData: StationData) => void;
+} 
 
-//Function Component
-const MRT3Stations = () => {
+//Function Component. SelectedMarker is a prop from the manager for it to retrieve clicked marker's info
+const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
     const trainLine = 'mrt-3';
     const [lat, setLat] = useState(0);
     const [lng, setLng] = useState(0);
     const [stations, setStations] = useState([] as StationData[]);
+    const [marker, setMarker] = useState({} as StationData);
     const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
     const [createStationMapClick, setCreateStationMapClick] = useState(false);
 
+    
 
     //Calls the function component createStation modal
     const invokeCreateStation = () => {
@@ -29,6 +35,12 @@ const MRT3Stations = () => {
         }
 
     }, [createStationMapClick])
+
+    useEffect(() => {
+        if (marker) {
+            setSelectedMarker && setSelectedMarker(marker);
+        }
+    }, [marker, setSelectedMarker]);
 
 
     const putMarker = () => {
@@ -90,7 +102,9 @@ const MRT3Stations = () => {
                         position={[station.coordinates[0], station.coordinates[1]]}
                         eventHandlers={{
                             click: () => {
-                                console.log('Marker clicked', station.stationName)
+                                setMarker(station)
+                                setSelectedMarker && setSelectedMarker(station);                         
+                                console.log('Marker clicked', station.stationName, station.coordinates)
                             }
                         }}
                         >
