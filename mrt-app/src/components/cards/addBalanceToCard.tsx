@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal'
-import { useParams } from 'react-router-dom';
-import { CardData, getCardList } from './manager';
 import { handleAddBalance } from './manager';
 
 Modal.setAppElement('#root');

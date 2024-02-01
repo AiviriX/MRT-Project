@@ -15,8 +15,8 @@ interface CreateStationProps {
 const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: onrequestClose, coordinates }) => {
     const [name, setName] = useState('');
     const [position, setPosition] = useState([0,0]);
-    const [lat, setLat] = useState(0);
-    const [long, setLong] = useState(0);
+    const [lat, setLat] = useState(coordinates ? coordinates[0] : 0);
+    const [long, setLong] = useState(coordinates ? coordinates[1] : 0);
     const [modalIsOpen, setModalIsOpen] = useState(isOpen);
 
     const addStation = async () => {
@@ -90,14 +90,14 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                             onKeyDown={(evt) => ["e", "E", "+",].includes(evt.key) && evt.preventDefault()}
                             onChange={e => setLat(Number(e.target.value))}
                             type="number"
-                            value={coordinates ? coordinates[0] : 0}
+                            value={lat}
                         />
                         <input className='mt-2 p-2 border rounded'
                             placeholder="Longitude"
                             onKeyDown={(evt) => ["e", "E", "+", "."].includes(evt.key) && evt.preventDefault()}
                             onChange={e => setLong(Number(e.target.value))}
                             type="number"
-                            value={coordinates ? coordinates[1] : 0}
+                            value={long}
                         />                            
                     </div>
                     <button 

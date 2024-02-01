@@ -11,8 +11,6 @@ export const stationRouter = express.Router();
 const Fare = mongoose.model('fares', FareSchema);
 const Station = mongoose.model('mrt-3', StationSchema);
 
-
-
 fareRouter.put('/stations/setFare', async (req, res) => {
     const { fare } = req.body;
     
@@ -46,3 +44,17 @@ stationRouter.post('/stations/add', async (req, res) => {
         res.status(200).json({ message: `Station Added ${stationName}, ${coordinates}` });
     }
 });
+
+stationRouter.get('/stations/get/:trainline', async (req, res) => {
+    const trainline = req.params.trainline;
+    const stations = mongoose.model(trainline.toLowerCase(), StationSchema);
+    const x = await stations.find({})
+    console.log(x)
+
+    if (x.length === 0) {
+        return res.status(400).json({ message: `No stations found for ${trainline}`});
+    } else {
+        res.status(200).json(x);
+    }
+});
+

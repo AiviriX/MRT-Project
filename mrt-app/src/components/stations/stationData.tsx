@@ -1,10 +1,10 @@
 import { Marker } from "leaflet"
 
-interface stationData {
-    id: number,
+interface StationData {
+    _id: number,
     stationName: string,
     coordinates: number[],
-    stationLineNum: number
+    stationLineNum?: number
 }
 
-export default stationData
+export default StationData
