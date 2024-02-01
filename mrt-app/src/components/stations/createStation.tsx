@@ -6,22 +6,38 @@ import { API_URL } from '../..';
 interface CreateStationProps {
     isOpen: boolean;
     onRequestClose: () => void;
+    coordinates? : [number, number];
 }
 
-const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: onrequestClose }) => {
+//Note: The CreateStation component relies on the hooks of the (parent) component that called it to close
+//the modal. This is because the CreateStation component does not have
+//access to the state of the parent component.
+const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: onrequestClose, coordinates }) => {
     const [name, setName] = useState('');
-    const [position, setPosition] = useState<[number, number]>([0, 0]);
+    const [position, setPosition] = useState([0,0]);
     const [lat, setLat] = useState(0);
     const [long, setLong] = useState(0);
     const [modalIsOpen, setModalIsOpen] = useState(isOpen);
 
     const addStation = async () => {
+        let newLat, newLong;
+        //Manual input from create station button
         if (!name || !position) {
             alert('Please fill in all fields')
             return
         }
 
-        setPosition([lat, long]);
+        //Auto input from map click
+        if (coordinates) {
+            console.log('CR', coordinates)
+            newLat = coordinates[0];
+            newLong = coordinates[1];
+            setLat(newLat);
+            setLong(newLong);
+            console.log('CR', newLat, newLong)
+        }
+
+
 
         try {
             console.log(`${API_URL}/stations/add`)
@@ -32,14 +48,14 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                 },
                 body: JSON.stringify({
                     stationName: name,
-                    coordinates: position
+                    coordinates: [newLat, newLong]
                 }), 
             });
     
             const data = await response.json();
             if (response.ok){ 
                 alert('Station Added Successfully')
-                setModalIsOpen(false);
+                onrequestClose()
             }
         } catch (error) {
             console.error('Error:', error);
@@ -74,12 +90,14 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                             onKeyDown={(evt) => ["e", "E", "+",].includes(evt.key) && evt.preventDefault()}
                             onChange={e => setLat(Number(e.target.value))}
                             type="number"
+                            value={coordinates ? coordinates[0] : 0}
                         />
                         <input className='mt-2 p-2 border rounded'
                             placeholder="Longitude"
                             onKeyDown={(evt) => ["e", "E", "+", "."].includes(evt.key) && evt.preventDefault()}
                             onChange={e => setLong(Number(e.target.value))}
                             type="number"
+                            value={coordinates ? coordinates[1] : 0}
                         />                            
                     </div>
                     <button 

@@ -63,6 +63,7 @@ const StationsManager = () => {
     <div className="flex h-screen overflow-hidden">
         <aside className="w-64 h-auto bg-gray-800 text-white p-6 space-y-6">
             <h1 className="text-xl font-bold">Stations Manager</h1>
+            <p className='justify'>You can also click the map twice to create a station</p>
             <button
               onClick={() => setStationAction('create')}
               className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

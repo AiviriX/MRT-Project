@@ -1,8 +1,9 @@
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import stations from './stations.json'
 import { Polyline } from 'react-leaflet';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LatLng } from "leaflet";
+import CreateStation from "../createStation";
 
 
 const positions: [number, number][] = [
@@ -42,22 +43,45 @@ const positions: [number, number][] = [
 
 const MRT3Stations = () => {
     const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
+    const [createStationMapClick, setCreateStationMapClick] = useState(false);
+    const [lat, setLat] = useState(0);
+    const [lng, setLng] = useState(0);
 
+    //Calls the function component createStation modal
+    const invokeCreateStation = () => {
+        return <CreateStation isOpen={true} onRequestClose={()=>{setCreateStationMapClick(false)}} coordinates={[lat, lng]}/>
+    }
+
+    useEffect(() => {
+        if (createStationMapClick) {
+            invokeCreateStation();
+        }
+
+    }, [createStationMapClick])
+
+
+    const putMarker = () => {
+        if (markerPosition) {
+            return(
+                <Marker position={markerPosition}>
+                    <Popup>
+                        <button className="bg-blue" onClick={()=>setCreateStationMapClick(true)}> Click here to create station </button>                           
+                    </Popup>
+                </Marker>
+            ) 
+        }
+    }
 
     const MapEvents = () => {
         const map = useMapEvents({
             click(e) {
                 // Handle map click event here
-                const {lat, lng} = e.latlng
-                console.log(`Map clicked at coordinates: ${lat}, ${lng}`)
+                setLat(e.latlng.lat);
+                setLng(e.latlng.lng);
+                console.log('coords', lat, lng)
+                console.log(`Map clicked at coordinates: ${e.latlng.lat}, ${e.latlng.lng}`)
                 setMarkerPosition(e.latlng);
-                console.log(markerPosition)
             },
-            // locationfound: (location) => {
-            //     // Handle location found
-            //     console.log(location)
-            //     map.flyTo(location.latlng, map.getZoom())
-            // }
         });
         return null;
     }
@@ -76,6 +100,8 @@ const MRT3Stations = () => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
             <MapEvents/>
+            {putMarker()}
+            {createStationMapClick ? invokeCreateStation() : null}
             <Polyline positions={positions} color='red' />
 
                 {/*TODO Add to json late her */}
