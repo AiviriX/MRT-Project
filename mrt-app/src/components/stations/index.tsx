@@ -39,15 +39,7 @@ const Stations = () => {
         } catch (error) {
             console.error(error);
         }
-    }
-
-    const onMapClick = (coords: [number, number]) => {
-        // Handle map click event here
-        console.log(`Map clicked at coordinates: ${coords}`);
-    };
-
-
-    
+    }    
 
     const getFareAndUpdateUI = async () => {
         try {

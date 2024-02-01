@@ -9,6 +9,7 @@ import StationData from './stationData';
 
 
 
+
 type Station = {
   name: string;
   position: [number, number];
@@ -31,9 +32,7 @@ export const StationsManager = () => {
     setTrainLine(event.target.value);
   };
 
-  const deleteStation = (name: string) => {
-    setStations(prevStations => prevStations.filter(station => station.name !== name));
-  };
+
 
   const renderTrainMap = () => {
     if (trainLine === 'MRT-3') {
@@ -62,10 +61,10 @@ export const StationsManager = () => {
   return (
 
     
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-x">
         <aside className="w-64 h-auto bg-gray-800 text-white p-6 space-y-6">
             <h1 className="text-xl font-bold">Stations Manager</h1>
-            <p className='justify'>You can also click the map twice to create a station</p>
+            <p className='justify'>You can also click the map, and the new marker to create a station</p>
             <button
               onClick={() => setStationAction('create')}
               className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -103,13 +102,16 @@ export const StationsManager = () => {
                 </select>
 
                 <div className='mb-8 justify-center'>
-                    <h2 className='font-bold text-2xl mb-2'> Selected Station </h2>
+                    <h1 className='font-bold text-2xl mb-2'> Selected Station: </h1>
                     {
                       selectedMarker && selectedMarker.coordinates ?
                         <div>
-                          <h1> {selectedMarker.stationName} </h1> 
+                          <h1 className='text-xl font-bold'> {selectedMarker.stationName} </h1> 
                           <h2> Latitude {selectedMarker.coordinates[0]} </h2>
                           <h2> Longitude {selectedMarker.coordinates[1]} </h2>
+                          <button
+                            onClick={() => deleteStation(selectedMarker.stationName)}
+                            className='p-2 bg-red-500 text-white rounded'> Delete Station </button>
                         </div> 
                       :
                        <h1> No Station Selected </h1>
@@ -128,6 +130,7 @@ export const StationsManager = () => {
   );
 };
 
+//Idk why we have 2 of the same code on createStation but i'll put it here just in case.
 const createStation = async (station: Station) => {
   try {
     const response = await fetch(`${API_URL}/create`, {
@@ -152,6 +155,23 @@ export const getStation = async (trainLine: String) => {
     const data = await response.json();
     if (response.ok) {
       return data
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+export const deleteStation = async (station: String) => {
+  try {
+    const response = await fetch(`${API_URL}/stations/delete/${station}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(station),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert('Station Deleted Successfully');
     }
   } catch (error) {
     console.error('Error:', error);

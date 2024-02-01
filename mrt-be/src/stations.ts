@@ -58,3 +58,14 @@ stationRouter.get('/stations/get/:trainline', async (req, res) => {
     }
 });
 
+stationRouter.delete('/stations/delete/:stationName', async (req, res) => {
+    const stationName = req.params.stationName;
+    const deletedStation = await Station.deleteOne({ stationName });
+    if (!deletedStation) {
+        return res.status(400).json({ message: `No station found with name ${stationName}`});
+    } else {
+        res.status(200).json({ message: `Deleted ${stationName}` });
+    }
+}
+);
+

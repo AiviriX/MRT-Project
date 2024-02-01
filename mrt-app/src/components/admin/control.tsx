@@ -33,7 +33,7 @@ const AdminDashboard = () => {
         <>
         {
             hasToken ? (
-                <div className="flex justify-bet h-screen">
+                <div className="flex justify-bet h-screen overflow-x">
                     <aside className="flex flex-col w-1/8  items-center h-screen bg-gray-800 text-white p-6 space-y-6">
                     <h1 className="text-xl font-bold cursor-pointer" onClick={()=>setAction('overview')}>Admin Control</h1>
                         <button 
