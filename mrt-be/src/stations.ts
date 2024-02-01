@@ -1,10 +1,16 @@
 import express from "express";
-import { FareSchema } from "../db/schemas"
+import { FareSchema, StationSchema } from "../db/schemas"
+
 import mongoose from "mongoose"
+import { stat } from "fs";
 
 
 export const fareRouter = express.Router();
+export const stationRouter = express.Router();
+
 const Fare = mongoose.model('fares', FareSchema);
+const Station = mongoose.model('mrt-3', StationSchema);
+
 
 
 fareRouter.put('/stations/setFare', async (req, res) => {
@@ -27,6 +33,16 @@ fareRouter.get('/stations/getFare', async (req, res) => {
     res.status(200).json(fare);
 });
 
-export const stations = () => {
-    
-}
+stationRouter.post('/stations/add', async (req, res) => {
+    const { stationName, coordinates } = req.body;
+    if (stationName === undefined || coordinates === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', stationName: `${stationName}`, coordinates: `${coordinates}` });
+    } else {
+        const station = new Station({
+            stationName,
+            coordinates
+        });
+        await station.save();
+        res.status(200).json({ message: `Station Added ${stationName}, ${coordinates}` });
+    }
+});

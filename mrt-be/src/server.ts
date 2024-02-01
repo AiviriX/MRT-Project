@@ -7,7 +7,7 @@ import { StationSchema, AdminSchema } from '../db/schemas';
 
 import adminRouter from './admin';
 import cardRouter from './cards';
-import { fareRouter } from './stations';
+import { fareRouter, stationRouter } from './stations';
 
 dotenv.config();
 
@@ -20,6 +20,7 @@ const startServer = (app: express.Express) => {
   app.use("/", adminRouter);
   app.use("/", cardRouter)
   app.use("/", fareRouter)
+  app.use("/", stationRouter)
   
   app.use(session({
     secret: process.env.SECRET_KEY || '',
