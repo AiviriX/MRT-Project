@@ -9,7 +9,7 @@ import CreateCard from '../cards/createCard';
 import CardEntry from './cardEntry';
 import { hasSessionToken } from '../../auth/sessionTokenManager';
 
-export interface Card {
+export interface CardData {
     uuid: string;
     balance: number;
     tappedIn: boolean;
@@ -17,7 +17,7 @@ export interface Card {
 };
 
 export const CardManager = () => {
-    const [cards, setCards] = useState<Card[]>([]);
+    const [cards, setCards] = useState<CardData[]>([]);
     const [cardAction, setCardAction] = useState('');
     const [searchQuery, setSearchQuery] = useState(''); //Search Query for the cards.
 
@@ -48,16 +48,16 @@ export const CardManager = () => {
                 setCards(fetchedCards);
 
             } catch (error) {   
-                console.log(error);
+                console.error(error);
             }
-            console.log(cards[2])
+            // console.log(cards[2])
         }
         // let x = GetCardList();
         // x.then((data) => {
         //     setCards(data);
         // });
         refreshCard()
-        console.log(cards)
+        // console.log(cards)
 
     }, [cardAction, reload]);
 
@@ -86,18 +86,20 @@ export const CardManager = () => {
                     <main className="flex-grow px-3 overflow-auto h-screen">
                         {   
                                 cardAction === 'create' ? <CreateCard/> :
-                                cards.map((card, index) => (
-                                        <CardEntry
-                                            key={card.uuid}
-                                            uuid={card.uuid}
-                                            tappedIn={card.tappedIn}
-                                            balance={card.balance}
-                                            handleDelete={handleDelete}
-                                            handleRefresh={refreshCardListFromChild}
-                                        />                                    
-                                    
 
-                                )) 
+                                    cards ? cards.map((card) => {
+                                        return (
+                                            <CardEntry
+                                                uuid={card.uuid}
+                                                balance={card.balance}
+                                                tappedIn={card.tappedIn}
+                                                sourceStation={card.tappedInStation}
+                                                handleDelete={handleDelete}
+                                                handleRefresh={refreshCardListFromChild}
+                                            />
+                                        )
+                                    }) : (<h1> No Cards Found </h1>)
+
                             }
 
                     </main>
@@ -128,12 +130,12 @@ export const deleteCard = async (uuid: string) => {
             alert('Card Deleted Successfully')
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
-//Sets the balance {and uuid} instead of adding balance to the cards.
-export const updateCard = async (uuid: string, balance: number) => {
+//Sets the balance and uuid instead of adding balance to the cards.
+export const overwriteCard = async (uuid: string, balance: number) => {
     try {
         const response = await fetch(`http://localhost:5000/manage/cards/update?uuid=${uuid}`, {
             method: 'PUT',
@@ -148,7 +150,7 @@ export const updateCard = async (uuid: string, balance: number) => {
             alert('Card Updated Successfully')
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 }
 
@@ -164,9 +166,32 @@ export const getCardList = async () => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 
+}
+
+export const getOneCard = async (uuid: string): Promise<CardData | null> => {
+    console.log('eep!' + uuid)
+    try {
+        const response = await fetch(`http://localhost:5000/cards/getOne?uuid=${uuid}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // body: JSON.stringify({uuid: uuid})
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }
 
 //Handles the addition of balance to the card.
@@ -192,5 +217,7 @@ export const handleAddBalance = async (inputUuid : String, newBalance: Number) =
       console.error(error);
     }
 }
+
+
 
 export default CardManager

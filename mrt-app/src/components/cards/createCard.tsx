@@ -43,7 +43,7 @@ const CreateCard = () => {
                 alert('Card Added Successfully')
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 

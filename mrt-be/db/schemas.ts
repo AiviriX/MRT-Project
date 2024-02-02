@@ -12,6 +12,11 @@ export const StationSchema = new Schema({
     coordinates: [Number]
 })
 
+export const MRT3Schema = new Schema({
+    stationName: String,
+    coordinates: [Number]
+})
+
 export const UserSchema = new Schema({
     username: String,
     password: String,
