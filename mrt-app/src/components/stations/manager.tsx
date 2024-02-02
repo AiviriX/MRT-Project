@@ -41,11 +41,20 @@ export const StationsManager = () => {
     // // Add more initial stations here...
   ]);
 
-
+  const [fare, setFare] = useState(0);
   const [reload, triggerReload] = useState(false);
   const [stationAction, setStationAction] = useState('');
   const [trainLine, setTrainLine] = useState('');
   const [selectedMarker, setSelectedMarker] = useState({} as StationData);
+
+  useEffect(() => {
+    const fetchFare = async () => {
+      const fare = await getFare();
+      setFare(fare);
+    };
+
+    fetchFare();
+  }, []);
 
 
   const handleTrainLineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -104,8 +113,6 @@ export const StationsManager = () => {
 
 
   return (
-
-    
     <div className="flex h-screen overflow-x">
         <aside className="flex flex-col w-48 h-auto bg-gray-800 text-white p-6 space-y-6">
             <h1 className="text-xl font-bold">Stations Manager</h1>
@@ -134,7 +141,7 @@ export const StationsManager = () => {
 
     <section className='flex flex-col items-center w-64 space-y-1 max-w-64 px-4 border-8 rounded'>
             <div className='flex flex-col w-auto items-center '>
-                <h1 className='text-1xl font-bold mb-4'> Fare Per KM {} </h1>
+                <h1 className='text-1xl font-bold mb-4'> Fare Per KM {fare} </h1>
                 <label className='mb-2 font-bold'> Select Line </label> 
                 <select 
                     className='w-1/2 px-3 py-2 text-gray-700 border rounded-lg focus:outline-none' 

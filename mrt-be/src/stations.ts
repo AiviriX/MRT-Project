@@ -82,7 +82,7 @@ stationRouter.put('/stations/update', async (req, res) => {
 
 
 stationRouter.put('/stations/update', async (req, res) => {
-    const { stationId, stationName, coordinates } = req.body.stationId;
+    const { stationId, stationName, coordinates, connectedStations:[{}] } = req.body.stationId;
     
     // Find the station by its ID
     const station = await Station.findById(stationId);

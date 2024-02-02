@@ -74,12 +74,12 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
         const fetchStations = async () => {
             const data = await getStation(trainLine);
             setStations(data);
-
-            const polylinePositions = stations.map((stations) => ([stations.coordinates[0], stations.coordinates[1]]));
-            setPolylinePositions(polylinePositions)   
+    
+            const polylinePositions = data.map((station: { coordinates: any[]; }) => ([station.coordinates[0], station.coordinates[1]]));
+            setPolylinePositions(polylinePositions);   
         } 
         fetchStations();
-    } ,[])
+    }, []);
 
     return (
         <>
