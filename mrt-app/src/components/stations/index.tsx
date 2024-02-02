@@ -1,7 +1,7 @@
 //stations/index.tsx
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import { useState, useEffect, Component } from 'react';
-import MRT3Stations from './mrt3/mrt3-stations';
+import MRT3Stations from './mrt3-stations';
 import { CardData, getOneCard } from '../cards/manager';
 
 import '../stations/station-styles.css';

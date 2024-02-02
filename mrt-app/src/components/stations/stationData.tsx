@@ -1,6 +1,4 @@
-import { Marker } from "leaflet"
-
-interface StationData {
+export interface StationData {
     _id: number,
     stationName: string,
     coordinates: number[],

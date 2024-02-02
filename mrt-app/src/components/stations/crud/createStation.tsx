@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Modal from 'react-modal';    
 
-import { API_URL } from '../..';
+import { API_URL } from '../../..';
 
 //Select stations when marker is clicked
 

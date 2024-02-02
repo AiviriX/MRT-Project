@@ -1,17 +1,18 @@
+//mrt3-stations.tsx 
+//This file contains the component for the MRT3 Stations.
+//Should be replaced by a generalized component that accepts
+//  the station line as a parameter and gets the stations from the database
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
-// import stations from './stations.json'
 import { Polyline } from 'react-leaflet';
 import { useEffect, useState } from "react";
 import { LatLng, LatLngExpression } from "leaflet";
-import CreateStation from "../createStation";
-import { getStation } from "../manager";
-import StationData from "../stationData";
-import { stat } from "fs";
+import CreateStation from "./crud/createStation";
+import StationData from "./stationData";
+import { getStation } from "./manager";
+import { RetrieveMarker } from "./manager";
 
-export interface RetrieveMarker {
-    marker?: StationData;
-    setSelectedMarker?: (markerData: StationData) => void;
-} 
+import { stat } from "fs";
+ 
 
 //Function Component. SelectedMarker is a prop from the manager for it to retrieve clicked marker's info
 const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
@@ -82,13 +83,6 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
 
     return (
         <>
-            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
-            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                crossOrigin="">
-            </script>
-            <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
-                className='flex box-border w-auto h-automaxw-32 maxh-32 p-4 border-4 mx-3 my-3 pos-center z-0'>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -120,7 +114,6 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
                         </>
                     ))
                 }
-            </MapContainer>
         </>
     );
 

@@ -58,8 +58,8 @@ stationRouter.get('/stations/get/:trainline', async (req, res) => {
     }
 });
 
-stationRouter.delete('/stations/delete/:stationName', async (req, res) => {
-    const stationName = req.params.stationName;
+stationRouter.delete('/stations/delete', async (req, res) => {
+    const stationName = req.body.stationName;
     const deletedStation = await Station.deleteOne({ stationName });
     if (!deletedStation) {
         return res.status(400).json({ message: `No station found with name ${stationName}`});
@@ -69,3 +69,29 @@ stationRouter.delete('/stations/delete/:stationName', async (req, res) => {
 }
 );
 
+stationRouter.put('/stations/update', async (req, res) => {
+    const { stationName, coordinates } = req.body;
+    const updatedStation = await Station.findOneAndUpdate
+        ({ stationName }, { coordinates }, { new: true });
+    if (!updatedStation) {
+        return res.status(400).json({ message: `No station found with name ${stationName}`});
+    } else {
+        res.status(200).json({ message: `Updated ${stationName} to ${coordinates}` });
+    }
+});
+
+
+stationRouter.put('/stations/update', async (req, res) => {
+    const { stationId, stationName, coordinates } = req.body.stationId;
+    
+    // Find the station by its ID
+    const station = await Station.findById(stationId);
+    if (!station) {
+        return res.status(404).json({ message: 'Station not found' });
+    }
+
+
+    const updatedStation = await station.save();
+
+    res.status(200).json(updatedStation);
+});
