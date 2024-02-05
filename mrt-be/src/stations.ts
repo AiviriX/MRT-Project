@@ -64,7 +64,7 @@ stationRouter.get('/stations/getconnection/:stationId', async (req, res) => {
     if (!station) {
         return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {
-        res.status(200).json(station.connectedStations);
+        res.status(200).json(station.connectedStation);
     }
 });
 
