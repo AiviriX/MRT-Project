@@ -21,6 +21,22 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
 
     const [modalIsOpen, setModalIsOpen] = useState(isOpen);
 
+    const getConnectedStations = async () => {
+        try {
+            const response = await fetch(`${API_URL}/stations/getconnection/${stationData._id}`, {
+                method: 'GET'
+            });
+            const data = await response.json();
+            console.log(data.connectedStations)
+            if (response.ok) {
+                console.log(data)
+            }
+            return data
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     const MapEvents = () => {
         const map = useMapEvents({
             click(e) {
@@ -40,13 +56,11 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
             return
         }
         
-
         const updatedStationData: StationData = {
             _id: stationData._id,
             stationName: name,
             coordinates: [lat, long]
         }
-
 
         if (!window.confirm(`Are you sure you want to update ${stationData.stationName}?`)) {
             return
@@ -112,8 +126,12 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
                         onChange={e => setLong(Number(e.target.value))}
                         type="number"
                         value={long}
-                    />                            
+                    />                    
                 </div>
+                <button 
+                    onClick={() => getConnectedStations()}
+                    className='p-2 bg-blue-500 text-white rounded'
+                    > Aweugh </button>    
                 <button 
                     onClick={updateStation}
                     className='p-2 bg-green-500 text-white rounded'> Update Station </button>
@@ -132,8 +150,7 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
               
               <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
                 <Marker position={[lat, long] }> </Marker>
               
                 <MapEvents/>

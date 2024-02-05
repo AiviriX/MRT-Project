@@ -20,6 +20,7 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
     const [lat, setLat] = useState(coordinates ? coordinates[0] : 0);
     const [long, setLong] = useState(coordinates ? coordinates[1] : 0);
     const [modalIsOpen, setModalIsOpen] = useState(isOpen);
+    const [connectedStations, setConnectedStations] = useState<string[]>();
 
     const addStation = async () => {
         let newLat, newLong;
@@ -31,37 +32,42 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
 
         //Auto input from map click
         if (coordinates) {
-            console.log('CR', coordinates)
             newLat = coordinates[0];
             newLong = coordinates[1];
             setLat(newLat);
             setLong(newLong);
-            console.log('CR', newLat, newLong)
         }
-
-
 
         try {
-            console.log(`${API_URL}/stations/add`)
-            const response = await fetch(`${API_URL}/stations/add`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    stationName: name,
-                    coordinates: [newLat, newLong]
-                }), 
-            });
-    
-            const data = await response.json();
-            if (response.ok){ 
-                alert('Station Added Successfully')
-                onrequestClose()
+            if (connectedStations){
+                const response = await fetch(`${API_URL}/stations/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        stationName: name,
+                        coordinates: [newLat, newLong],
+                        connectedStations: connectedStations
+                    }), 
+                });
+            } else {
+                const response = await fetch(`${API_URL}/stations/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        stationName: name,
+                        coordinates: [newLat, newLong],
+                    }), 
+                });
             }
-        } catch (error) {
+        } catch(error) {
             console.error('Error:', error);
         }
+        
+
     }
 
     return (
@@ -82,8 +88,7 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                             placeholder="Station Name"
                             type="text"
                             value={name} 
-                            onChange={e => setName(e.target.value)}
-                            />
+                            onChange={e => setName(e.target.value)}/>
 
                     <label className='text-xl'> Coordinates (Lat. Long.)  </label>
                     <div className='flex flex-row'>
@@ -92,8 +97,7 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                             onKeyDown={(evt) => ["e", "E", "+",].includes(evt.key) && evt.preventDefault()}
                             onChange={e => setLat(Number(e.target.value))}
                             type="number"
-                            value={lat}
-                        />
+                            value={lat}/>
                         <input className='mt-2 p-2 border rounded'
                             placeholder="Longitude"
                             onKeyDown={(evt) => ["e", "E", "+", "."].includes(evt.key) && evt.preventDefault()}
