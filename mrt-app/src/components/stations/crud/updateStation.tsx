@@ -58,10 +58,10 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    stationId: stationData._id,
-                    stationName: name,
-                    coordinates: [lat, long]
+                body: JSON.stringify({ //Send new details to the server
+                    stationId: stationData._id, //station id
+                    stationName: name, //new name
+                    coordinates: [lat, long] //new coords 
                 }), 
             });
     

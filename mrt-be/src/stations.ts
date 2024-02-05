@@ -70,13 +70,13 @@ stationRouter.delete('/stations/delete', async (req, res) => {
 );
 
 stationRouter.put('/stations/update', async (req, res) => {
-    const { stationName, coordinates } = req.body;
+    const { stationId, stationName, coordinates } = req.body;
     const updatedStation = await Station.findOneAndUpdate
-        ({ stationName }, { coordinates }, { new: true });
+        ({ _id: stationId }, { stationName, coordinates }, { new: true });
     if (!updatedStation) {
-        return res.status(400).json({ message: `No station found with name ${stationName}`});
+        return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {
-        res.status(200).json({ message: `Updated ${stationName} to ${coordinates}` });
+        res.status(200).json({ message: `Updated station with id ${stationId} to ${stationName}, ${coordinates}` });
     }
 });
 
