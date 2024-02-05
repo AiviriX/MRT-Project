@@ -58,6 +58,16 @@ stationRouter.get('/stations/get/:trainline', async (req, res) => {
     }
 });
 
+stationRouter.get('/stations/getconnection/:stationId', async (req, res) => {
+    const stationId = req.params.stationId;
+    const station = await Station.findById(stationId);
+    if (!station) {
+        return res.status(400).json({ message: `No station found with id ${stationId}`});
+    } else {
+        res.status(200).json(station.connectedStations);
+    }
+});
+
 stationRouter.delete('/stations/delete', async (req, res) => {
     const stationName = req.body.stationName;
     const deletedStation = await Station.deleteOne({ stationName });
@@ -67,7 +77,7 @@ stationRouter.delete('/stations/delete', async (req, res) => {
         res.status(200).json({ message: `Deleted ${stationName}` });
     }
 }
-);
+)
 
 stationRouter.put('/stations/update', async (req, res) => {
     const { stationId, stationName, coordinates } = req.body;

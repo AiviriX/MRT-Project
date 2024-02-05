@@ -9,7 +9,8 @@ export const CardSchema = new Schema({
 
 export const StationSchema = new Schema({
     stationName: String,
-    coordinates: [Number]
+    coordinates: [Number],
+    connectedStations: []
 })
 
 export const MRT3Schema = new Schema({
