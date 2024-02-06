@@ -125,12 +125,6 @@ export const StationsManager = () => {
         </aside>
         <div className='bg-blue-500'>
             <main className="flex-grow overflow-auto h-screen">
-                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
-                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                        crossOrigin="">
-                    </script>
-                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
             </main>
     </div>
 
@@ -142,8 +136,7 @@ export const StationsManager = () => {
                     className='w-1/2 px-3 py-2 text-gray-700 border rounded-lg focus:outline-none' 
                     onChange={handleTrainLineChange}
                 >
-                    <option value="LRT-1">LRT-1</option>
-                    <option value="LRT-2">LRT-2</option>
+                    <option value="LRT-2">nan</option>
                     <option value="MRT-3">MRT-3</option>
                 </select>
 

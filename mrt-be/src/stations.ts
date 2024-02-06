@@ -65,6 +65,7 @@ stationRouter.get('/stations/getconnection/:stationId', async (req, res) => {
         return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {
         res.status(200).json(station.connectedStation);
+        
     }
 });
 
@@ -80,9 +81,9 @@ stationRouter.delete('/stations/delete', async (req, res) => {
 )
 
 stationRouter.put('/stations/update', async (req, res) => {
-    const { stationId, stationName, coordinates } = req.body;
+    const { stationId, stationName, coordinates, connectedStation } = req.body;
     const updatedStation = await Station.findOneAndUpdate
-        ({ _id: stationId }, { stationName, coordinates }, { new: true });
+        ({ _id: stationId }, { stationName, coordinates, connectedStation }, { new: true });
     if (!updatedStation) {
         return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {

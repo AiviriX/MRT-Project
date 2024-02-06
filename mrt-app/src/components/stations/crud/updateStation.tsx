@@ -19,13 +19,13 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
     const [lat, setLat] = useState(stationData.coordinates[0]);
     const [long, setLong] = useState(stationData.coordinates[1]);
     const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
-    const [connectedStations, setConnectedStations] = useState<string[]>([]);
     const [connectedStationsData, setConnectedStationsData] = useState<StationData[]>([]);
     const [allStations, setAllStations] = useState<StationData[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    
-    const [selectedConnectedStations, setSelectedConnectedStations] = useState<string[]>([]);
     const [modalIsOpen, setModalIsOpen] = useState(isOpen);
+
+    const [connectedStations, setConnectedStations] = useState<string[]>([]); //The actual value to pass to the db
+    const [selectedConnectedStations, setSelectedConnectedStations] = useState<string[]>([]); //To show on the selection
 
     useEffect(() => {
         // Initialize selectedConnectedStations with initial connected stations from the database
@@ -63,7 +63,9 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
                 console.error('Error fetching connected stations:', error);
             }
         };
-    
+
+
+        //Load 
         if (isOpen && stationData) {
             fetchConnectedStations();
         }
@@ -105,38 +107,59 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
             return
         }
         
-        const updatedStationData: StationData = {
-            _id: stationData._id,
-            stationName: name,
-            coordinates: [lat, long]
-        }
 
         if (!window.confirm(`Are you sure you want to update ${stationData.stationName}?`)) {
             return
         }
 
         try {
-            const response = await fetch(`${API_URL}/stations/update`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ //Send new details to the server
-                    stationId: stationData._id, //station id
-                    stationName: name, //new name
-                    coordinates: [lat, long] //new coords 
-                }), 
-            });
-    
-            const data = await response.json();
-            if (response.ok){ 
-                alert('Station Updated Successfully')
-                onRequestClose()
+            if (selectedConnectedStations.length > 0) {
+                    const response = await fetch(`${API_URL}/stations/update`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ //Send new details to the server
+                            stationId: stationData._id, //station id
+                            stationName: name, //new name
+                            coordinates: [lat, long], //new coords 
+                            connectedStation: connectedStations
+                        }), 
+                    });
+            
+                    const data = await response.json();
+                    if (response.ok){ 
+                        alert('Station Updated Successfully')
+                        onRequestClose()
+                    } else {
+                        alert('Error updating station')
+                    }
+            } else {
+                    const response = await fetch(`${API_URL}/stations/update`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ //Send new details to the server
+                            stationId: stationData._id, //station id
+                            stationName: name, //new name
+                            coordinates: [lat, long], //new coords 
+                        }), 
+                    });
+            
+                    const data = await response.json();
+                    if (response.ok){ 
+                        alert('Station Updated Successfully')
+                        onRequestClose()
+                    } else {
+                        alert('Error updating station')
+                    }
             }
         } catch (error) {
             console.error('Error:', error);
         }
     }
+    
 
     return (
         <>

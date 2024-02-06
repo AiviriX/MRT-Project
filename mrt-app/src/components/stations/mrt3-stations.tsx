@@ -18,7 +18,7 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
     const trainLine = 'mrt-3';
     const [lat, setLat] = useState(0);
     const [lng, setLng] = useState(0);
-    const [stations, setStations] = useState([] as StationData[]);
+    const [stations, setStations] = useState<StationData[]>([]);
     const [marker, setMarker] = useState({} as StationData);
     const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
     const [createStationMapClick, setCreateStationMapClick] = useState(false);
@@ -72,13 +72,29 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
     useEffect(() => {
         const fetchStations = async () => {
             const data = await getStation(trainLine);
+            console.log('data', data);
             setStations(data);
-    
-            const polylinePositions = data.map((station: { coordinates: any[]; }) => ([station.coordinates[0], station.coordinates[1]]));
-            setPolylinePositions(polylinePositions);   
         } 
         fetchStations();
     }, []);
+
+    const getpolyLines = () => {
+
+        return stations.map((station: StationData) =>
+            station.connectedStations?.map((connectedStationId: string) => {
+                const connectedStation = stations.find((s) => s._id === connectedStationId);
+                if (connectedStation) {
+                    const positions: LatLngExpression[] = [
+                        [station.coordinates[0], station.coordinates[1]],
+                        [connectedStation.coordinates[0], connectedStation.coordinates[1]],
+                    ];
+                    return <Polyline color="black" positions={positions} />;
+                }
+                return null;
+            })
+        );
+    }
+    
 
     return (
         <>
@@ -105,11 +121,29 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
                                 }
                             }}
                             >
+                                {stations?.map((station: StationData) =>
+                                station.connectedStations.map((connectedStationId: string) => {
+                                const connectedStation = stations.find(
+                                    (s) => s._id === connectedStationId
+                                );
+                                if (connectedStation) {
+                                    const positions: LatLngExpression[] = [
+                                    [station.coordinates[0], station.coordinates[1]],
+                                    [
+                                        connectedStation.coordinates[0],
+                                        connectedStation.coordinates[1],
+                                    ],
+                                    ];
+                                    return <Polyline color="black" positions={positions} />;
+                                }
+                                return null;
+                                })
+                            )}
                             <Popup>
                                 {station.stationName}
                             </Popup>
                         </Marker>
-                        {stations.length > 0 && <Polyline positions={polylinePositions as LatLngExpression[]} color='red' />}
+                        {/* {stations.length > 0 && <Polyline positions={polylinePositions as LatLngExpression[]} color='red' />} */}
                         </>
                     ))
                 }

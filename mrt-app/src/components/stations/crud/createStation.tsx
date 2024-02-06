@@ -51,6 +51,11 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                         connectedStations: connectedStations
                     }), 
                 });
+
+                if (response.ok) {
+                    alert('Station Added Successfully');
+                    onrequestClose();
+                }
             } else {
                 const response = await fetch(`${API_URL}/stations/add`, {
                     method: 'POST',
@@ -62,7 +67,15 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                         coordinates: [newLat, newLong],
                     }), 
                 });
+
+                if (response.ok) {
+                    alert('Station Added Successfully');
+                    onrequestClose();
+                }
+
+
             }
+
         } catch(error) {
             console.error('Error:', error);
         }
