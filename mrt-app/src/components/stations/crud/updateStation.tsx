@@ -5,25 +5,55 @@ import { API_URL } from '../../..';
 import StationData from '../stationData';
 import { MapContainer, useMapEvents, TileLayer, Marker } from 'react-leaflet';
 import { LatLng } from 'leaflet';
-import { getConnectedStations } from '../manager';
+import { fetchStationData, getConnectedStations, getStation } from '../manager';
 import Select from 'react-select'
 interface UpdateStationProps {
     isOpen: boolean;
     onRequestClose: () => void;
     stationData: StationData
+    listOfStations?: StationData[]
 }
 
-const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, stationData }) => {
+const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, stationData}) => {
     const [name, setName] = useState(stationData.stationName);
     const [lat, setLat] = useState(stationData.coordinates[0]);
     const [long, setLong] = useState(stationData.coordinates[1]);
     const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
     const [connectedStations, setConnectedStations] = useState<string[]>([]);
+    const [connectedStationsData, setConnectedStationsData] = useState<StationData[]>([]);
+    const [allStations, setAllStations] = useState<StationData[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    
     const [selectedConnectedStations, setSelectedConnectedStations] = useState<string[]>([]);
     const [modalIsOpen, setModalIsOpen] = useState(isOpen);
-    const [connectedStationsData, setConnectedStationsData] = useState<StationData[]>([]);
 
-    
+    useEffect(() => {
+        // Initialize selectedConnectedStations with initial connected stations from the database
+        setSelectedConnectedStations(connectedStations);
+    }, [connectedStations]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const stations = await getStation('mrt-3'); // Fetch all stations using the getStation function
+                setAllStations(stations);
+                setLoading(false);  
+            } catch (error) {
+                console.error('Error fetching stations:', error);
+                setLoading(false);
+            }
+        };
+
+        if (isOpen) {
+            fetchData();
+        }
+    }, [isOpen]);
+
+    const remainingStations = allStations.filter(station => !connectedStations.includes(station._id));
+
+
+    //gets connected stations from the thing and puts it in the state variable
     useEffect(() => {
         const fetchConnectedStations = async () => {
             try {
@@ -38,6 +68,7 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
             fetchConnectedStations();
         }
     }, [isOpen, stationData]);
+    
 
     useEffect(() => {
         const fetchConnectedStationsData = async () => {
@@ -48,7 +79,7 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
                         return data || null;
                     })
                 );
-                setConnectedStationsData(stationsData.filter((data) => data !== null) as StationData[]);
+                setConnectedStationsData(stationsData.filter(Boolean) as StationData[]);
             }
         };
     
@@ -107,28 +138,12 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
         }
     }
 
-    const fetchStationData = async (stationId: string): Promise<StationData | null> => {
-        try {
-            const response = await fetch(`${API_URL}/stations/getone/${stationId}`);
-            if (response.ok) {
-                const data = await response.json();
-                return data as StationData;
-            } else {
-                // Handle error if the station data could not be fetched
-                return null;
-            }
-        } catch (error) {
-            console.error('Error fetching station data:', error);
-            return null;
-        }
-    };
-
     return (
         <>
             <Modal 
                 isOpen={isOpen} 
                 onRequestClose={onRequestClose}
-                className="flex items-center justify-center p-4"
+                className="flex items-center justify-center p-4 z-50"
             >
                 <div className='flex flex-row space-y-4 bg-white rounded-lg p-6 shadow-lg'>
                     <section className='flex flex-col space-y-4 mr-4'>
@@ -165,10 +180,15 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
                         <label className='text-lg'> Connected Stations </label>
                         <Select
                             isMulti
-                            options={connectedStationsData.map(station => ({ value: station._id, label: station.stationName }))}
-                            value={connectedStationsData.map(station => ({ value: station._id, label: station.stationName }))}
-                            onChange={(selectedOptions: any) => setConnectedStations(selectedOptions.map((option: any) => option.value))}
+                            options={remainingStations.map(station => ({ value: station._id, label: station.stationName }))}
+                            value={selectedConnectedStations.map(stationId => ({ value: stationId, label: allStations.find(station => station._id === stationId)?.stationName}))}
+                            onChange={(selectedOptions: any) => {
+                                const selectedStationIds = selectedOptions.map((option: any) => option.value);
+                                setSelectedConnectedStations(selectedStationIds);
+                                setConnectedStations(selectedStationIds);
+                            }}
                         />
+
 
                         
                         <button 

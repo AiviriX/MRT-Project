@@ -9,7 +9,6 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import MRT3Stations from './mrt3-stations';
 import { API_URL } from '../../index';
 import StationData from './stationData';
-import { stat } from 'fs';
 import UpdateStation from './crud/updateStation';
 import { getFare } from './fare';
 
@@ -31,12 +30,12 @@ export interface RetrieveMarker {
 
 type Station = {
   name: string;
-  position: [number, number];
+  coordinates: [number, number];
 };
 
 
 export const StationsManager = () => {
-  const [stations, setStations] = useState<Station[]>([
+  const [stations, setStations] = useState<StationData[]>([
     // { name: 'Station 1', position: [14.635222115280635, 121.04333937202267] },
     // // Add more initial stations here...
   ]);
@@ -64,7 +63,7 @@ export const StationsManager = () => {
 
   const handleUpdate = (selectedMarker: StationData) => {
     setStationAction('update');
-    return <UpdateStation isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} />
+    return <UpdateStation isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} listOfStations={stations} />
   }
 
 
@@ -97,15 +96,12 @@ export const StationsManager = () => {
     const renderAction = () => {
       if (stationAction === 'read') {
         return stations.map((station, index) => (
-          <StationEntry key={index} name={station.name} position={station.position} handleDelete={deleteStation} handleRefresh={() => {}} />
+          <StationEntry key={index} name={station.stationName} position={station.coordinates} handleDelete={deleteStation} handleRefresh={() => {}} />
         ));
       }
 
-      if (stationAction === 'update'){
-        return <UpdateStation isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} />
-      }
+    
     };
-
     renderAction()
   },[stationAction])
 
@@ -265,5 +261,21 @@ export const getOneStation = async (stationId: String) => {
     console.error('Error:', error);
   }
 }
+
+export const fetchStationData = async (stationId: string): Promise<StationData | null> => {
+  try {
+      const response = await fetch(`${API_URL}/stations/getone/${stationId}`);
+      if (response.ok) {
+          const data = await response.json();
+          return data as StationData;
+      } else {
+          // Handle error if the station data could not be fetched
+          return null;
+      }
+  } catch (error) {
+      console.error('Error fetching station data:', error);
+      return null;
+  }
+};
 
 export default StationsManager;
