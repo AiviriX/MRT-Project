@@ -64,7 +64,6 @@ export const StationsManager = () => {
 
   const handleUpdate = (selectedMarker: StationData) => {
     setStationAction('update');
-
     return <UpdateStation isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} />
   }
 
@@ -117,11 +116,11 @@ export const StationsManager = () => {
         <aside className="flex flex-col w-48 h-auto bg-gray-800 text-white p-6 space-y-6">
             <h1 className="text-xl font-bold">Stations Manager</h1>
             <p className='justify'>You can also click the map, and the new marker to create a station</p>
-            <button
-              onClick={() => setStationAction('create')}
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {/* <button
+              onClick={() => setStationAction('')}
+              className="w-full bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               Create Station
-            </button>
+            </button> */}
             <button
               onClick={() => setStationAction('read')}
               className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
@@ -175,21 +174,17 @@ export const StationsManager = () => {
             </div>
         </section>
 
-                    
-          <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
-                  className='flex box-border w-auto h-automaxw-32 maxh-32 border-4 pos-center z-0'>
-              <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
-              <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                  crossOrigin="">
-              </script>
-              {/* Render the map */}
+        <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
+                className='flex box-border w-auto h-automaxw-32 maxh-32 border-4 pos-center z-0'>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                crossOrigin="">
+            </script>
+            { /* Render the map */ }
             { renderTrainMap()  } 
-          </MapContainer>
-
-          {/* Render CreateStation when stationAction is 'create' */}
-          {stationAction === 'create' && <CreateStation isOpen={true} onRequestClose={() => setStationAction('')}/>}
-
+        </MapContainer>
+        {stationAction === 'create' && <CreateStation isOpen={true} onRequestClose={() => setStationAction('')}/>}
     </div>
   );
 };
@@ -203,7 +198,7 @@ const createStation = async (station: Station) => {
       body: JSON.stringify(station),
     });
 
-    const data = await response.json();
+    // const data = await response.json();
     if (response.ok) {
       alert('Station Added Successfully');
     }
@@ -237,6 +232,34 @@ export const deleteStation = async (station: String) => {
     const data = await response.json();
     if (response.ok) {
       alert('Station Deleted Successfully');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+//REturns the list of stations connected to the station
+export const getConnectedStations = async (stationData: StationData) => {
+  try {
+      const response = await fetch(`${API_URL}/stations/getconnection/${stationData._id}`, {
+          method: 'GET'
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log(data)
+      }
+      return data
+  } catch (error) {
+      console.error('Error:', error);
+  }
+}
+
+export const getOneStation = async (stationId: String) => {
+  try {
+    const response = await fetch(`${API_URL}/stations/getone/${stationId}`);
+    const data = await response.json();
+    if (response.ok) {
+      return data
     }
   } catch (error) {
     console.error('Error:', error);

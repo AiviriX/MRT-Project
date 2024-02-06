@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 
 import { API_URL } from '../../..';
 import StationData from '../stationData';
 import { MapContainer, useMapEvents, TileLayer, Marker } from 'react-leaflet';
-import { showTileLayer } from '../manager';
 import { LatLng } from 'leaflet';
-
+import { getConnectedStations } from '../manager';
+import Select from 'react-select'
 interface UpdateStationProps {
     isOpen: boolean;
     onRequestClose: () => void;
@@ -16,26 +16,44 @@ interface UpdateStationProps {
 const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, stationData }) => {
     const [name, setName] = useState(stationData.stationName);
     const [lat, setLat] = useState(stationData.coordinates[0]);
-    const [long, setLong] = useState(stationData.coordinates[1])
+    const [long, setLong] = useState(stationData.coordinates[1]);
     const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
-
+    const [connectedStations, setConnectedStations] = useState<string[]>([]);
+    const [selectedConnectedStations, setSelectedConnectedStations] = useState<string[]>([]);
     const [modalIsOpen, setModalIsOpen] = useState(isOpen);
+    const [connectedStationsData, setConnectedStationsData] = useState<StationData[]>([]);
 
-    const getConnectedStations = async () => {
-        try {
-            const response = await fetch(`${API_URL}/stations/getconnection/${stationData._id}`, {
-                method: 'GET'
-            });
-            const data = await response.json();
-            console.log(data.connectedStations)
-            if (response.ok) {
-                console.log(data)
+    
+    useEffect(() => {
+        const fetchConnectedStations = async () => {
+            try {
+                const connectedStations = await getConnectedStations(stationData);
+                setConnectedStations(connectedStations);
+            } catch (error) {
+                console.error('Error fetching connected stations:', error);
             }
-            return data
-        } catch (error) {
-            console.error('Error:', error);
+        };
+    
+        if (isOpen && stationData) {
+            fetchConnectedStations();
         }
-    }
+    }, [isOpen, stationData]);
+
+    useEffect(() => {
+        const fetchConnectedStationsData = async () => {
+            if (connectedStations && connectedStations.length > 0) {
+                const stationsData = await Promise.all(
+                    connectedStations.map(async (stationId) => {
+                        const data = await fetchStationData(stationId);
+                        return data || null;
+                    })
+                );
+                setConnectedStationsData(stationsData.filter((data) => data !== null) as StationData[]);
+            }
+        };
+    
+        fetchConnectedStationsData();
+    }, [connectedStations]);
 
     const MapEvents = () => {
         const map = useMapEvents({
@@ -89,77 +107,116 @@ const UpdateStation: React.FC<UpdateStationProps> = ({ isOpen, onRequestClose, s
         }
     }
 
+    const fetchStationData = async (stationId: string): Promise<StationData | null> => {
+        try {
+            const response = await fetch(`${API_URL}/stations/getone/${stationId}`);
+            if (response.ok) {
+                const data = await response.json();
+                return data as StationData;
+            } else {
+                // Handle error if the station data could not be fetched
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching station data:', error);
+            return null;
+        }
+    };
+
     return (
         <>
-        <Modal isOpen={modalIsOpen} onRequestClose={onRequestClose}
-            style={{
-                content: {
-                width: 'auto',
-                height: '500px',
-                margin: 'auto',
-                },
-            }}                
-        >
-        <div className='flex flex-row space-y-4'>
-            <section className='flex flex-col space-y-4'>
-                <h1> Update Station </h1>
-                <label className='text-xl w-1/2'> Station Name </label>
-                <input className='mt-2 p-2 border rounded'
-                        placeholder="Station Name"
-                        type="text"
-                        value={name} 
-                        onChange={e => setName(e.target.value)}
+            <Modal 
+                isOpen={isOpen} 
+                onRequestClose={onRequestClose}
+                className="flex items-center justify-center p-4"
+            >
+                <div className='flex flex-row space-y-4 bg-white rounded-lg p-6 shadow-lg'>
+                    <section className='flex flex-col space-y-4 mr-4'>
+                        <h1 className='text-2xl font-bold'> Update Station </h1>
+                        <label className='text-lg'> Station Name </label>
+                        <input 
+                            className='mt-2 p-2 border rounded'
+                            placeholder="Station Name"
+                            type="text"
+                            value={name} 
+                            onChange={e => setName(e.target.value)}
                         />
 
-                <label className='text-xl'> Coordinates (Lat. Long.)  </label>
-                <div className='flex flex-row'>
-                    <input className='mt-2 p-2 border rounded'
-                        placeholder="Latitude"
-                        onKeyDown={(evt) => ["e", "E", "+",].includes(evt.key) && evt.preventDefault()}
-                        onChange={e => setLat(Number(e.target.value))}
-                        type="number"
-                        value={lat}
-                    />
-                    <input className='mt-2 p-2 border rounded'
-                        placeholder="Longitude"
-                        onKeyDown={(evt) => ["e", "E", "+", "."].includes(evt.key) && evt.preventDefault()}
-                        onChange={e => setLong(Number(e.target.value))}
-                        type="number"
-                        value={long}
-                    />                    
-                </div>
-                <button 
-                    onClick={() => getConnectedStations()}
-                    className='p-2 bg-blue-500 text-white rounded'
-                    > Aweugh </button>    
-                <button 
-                    onClick={updateStation}
-                    className='p-2 bg-green-500 text-white rounded'> Update Station </button>
-                <button
-                    onClick={onRequestClose}
-                    className='p-2 bg-red-500 text-white rounded'> Close </button>               
-            </section>
+                        <label className='text-lg'> Coordinates (Lat. Long.)  </label>
+                        <div className='flex flex-row space-x-2'>
+                            <input 
+                                className='mt-2 p-2 border rounded w-full'
+                                placeholder="Latitude"
+                                onKeyDown={(evt) => ["e", "E", "+",].includes(evt.key) && evt.preventDefault()}
+                                onChange={e => setLat(Number(e.target.value))}
+                                type="number"
+                                value={lat}
+                            />
+                            <input 
+                                className='mt-2 p-2 border rounded w-full'
+                                placeholder="Longitude"
+                                onKeyDown={(evt) => ["e", "E", "+", "."].includes(evt.key) && evt.preventDefault()}
+                                onChange={e => setLong(Number(e.target.value))}
+                                type="number"
+                                value={long}
+                            />                    
+                        </div>
 
-            <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
-                  className='flex box-border w-full h-full maxw-32 maxh-32 border-4 pos-center z-0'>
-              <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
-              <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                  crossOrigin="">
-              </script>
-              
-              <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-                <Marker position={[lat, long] }> </Marker>
-              
-                <MapEvents/>
-            </MapContainer>
-        </div>
-        
-        </Modal>
+                        <label className='text-lg'> Connected Stations </label>
+                        <Select
+                            isMulti
+                            options={connectedStationsData.map(station => ({ value: station._id, label: station.stationName }))}
+                            value={connectedStationsData.map(station => ({ value: station._id, label: station.stationName }))}
+                            onChange={(selectedOptions: any) => setConnectedStations(selectedOptions.map((option: any) => option.value))}
+                        />
+
+                        
+                        <button 
+                            onClick={updateStation}
+                            className='p-2 bg-green-500 text-white rounded w-full mt-2'
+                        > 
+                            Update Station 
+                        </button>
+                        <button
+                            onClick={onRequestClose}
+                            className='p-2 bg-red-500 text-white rounded w-full mt-2'
+                        > 
+                            Close 
+                        </button>               
+                    </section>
+
+                    <MapContainer 
+                        center={[14.60773659867783, 121.0266874139731]} 
+                        zoom={12} 
+                        scrollWheelZoom={true}
+                        className='flex-grow box-border w-full h-full maxw-32 maxh-32 border-4 pos-center z-0'
+                    >
+                        <link 
+                            rel="stylesheet" 
+                            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+                            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+                            crossOrigin="" 
+                        />
+                        <script 
+                            src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                            crossOrigin=""
+                        >
+                        </script>
+                        
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <Marker position={[lat, long] }> </Marker>
+                    
+                        <MapEvents/>
+                    </MapContainer>
+                </div>
+            </Modal>
         </>
     );
+    
 }
 
 export default UpdateStation;

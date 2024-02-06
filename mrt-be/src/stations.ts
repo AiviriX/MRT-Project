@@ -93,15 +93,21 @@ stationRouter.put('/stations/update', async (req, res) => {
 
 stationRouter.put('/stations/update', async (req, res) => {
     const { stationId, stationName, coordinates, connectedStations:[{}] } = req.body.stationId;
-    
     // Find the station by its ID
     const station = await Station.findById(stationId);
     if (!station) {
         return res.status(404).json({ message: 'Station not found' });
     }
-
-
     const updatedStation = await station.save();
-
     res.status(200).json(updatedStation);
+});
+
+stationRouter.get('/stations/getone/:stationId', async (req, res) => {
+    const stationId = req.params.stationId;
+    const station = await Station.findById(stationId);
+    if (!station) {
+        return res.status(400).json({ message: `No station found with id ${stationId}`});
+    } else {
+        res.status(200).json(station);
+    }
 });

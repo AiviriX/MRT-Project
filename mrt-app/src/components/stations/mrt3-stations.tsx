@@ -2,7 +2,7 @@
 //This file contains the component for the MRT3 Stations.
 //Should be replaced by a generalized component that accepts
 //  the station line as a parameter and gets the stations from the database
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import {  Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import { Polyline } from 'react-leaflet';
 import { useEffect, useState } from "react";
 import { LatLng, LatLngExpression } from "leaflet";
@@ -11,7 +11,6 @@ import StationData from "./stationData";
 import { getStation } from "./manager";
 import { RetrieveMarker } from "./manager";
 
-import { stat } from "fs";
  
 
 //Function Component. SelectedMarker is a prop from the manager for it to retrieve clicked marker's info
@@ -118,6 +117,5 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
     );
 
 }
-
 
 export default MRT3Stations;
