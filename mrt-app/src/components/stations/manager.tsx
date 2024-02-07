@@ -4,12 +4,10 @@
 //
 import React, { useState, useEffect } from 'react';
 import StationEntry from './stationEntry'; // Import the StationEntry component
-import CreateStation from './crud/createStation';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import MRT3Stations from './mrt3-stations';
 import { API_URL } from '../../index';
 import StationData from './stationData';
-import UpdateStation from './crud/updateStation';
 import { getFare } from './fare';
 import StationModal from './crud/stationModal';
 
@@ -64,7 +62,7 @@ export const StationsManager = () => {
 
   const handleUpdate = (selectedMarker: StationData) => {
     setStationAction('update');
-    return <UpdateStation isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} listOfStations={stations} />
+    return <StationModal isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} mode='update'  />
   }
 
 
@@ -152,7 +150,7 @@ export const StationsManager = () => {
                           <button
                             onClick={() => handleUpdate(selectedMarker)}
                             className='p-2 w-full bg-green-500 text-white rounded'> Update Station </button>
-                            {stationAction === 'update' && <UpdateStation isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} />}
+                            {stationAction === 'update' && <StationModal isOpen={true} onRequestClose={() => setStationAction('')} stationData={selectedMarker} mode='update'/>}
                           <button
                             onClick={() => handleDelete(selectedMarker.stationName)}
                             className='p-2 w-full bg-red-500 text-white rounded'> Delete Station </button>
