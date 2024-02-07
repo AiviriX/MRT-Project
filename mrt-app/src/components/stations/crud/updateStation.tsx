@@ -1,3 +1,6 @@
+//Deprecated
+//This component is not used in the final version of the app
+//It is replaced by the StationModal component
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 

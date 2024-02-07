@@ -11,6 +11,7 @@ import { API_URL } from '../../index';
 import StationData from './stationData';
 import UpdateStation from './crud/updateStation';
 import { getFare } from './fare';
+import StationModal from './crud/stationModal';
 
 export const showTileLayer = () => {
   return (
@@ -173,7 +174,7 @@ export const StationsManager = () => {
             { /* Render the map */ }
             { renderTrainMap()  } 
         </MapContainer>
-        {stationAction === 'create' && <CreateStation isOpen={true} onRequestClose={() => setStationAction('')}/>}
+        {stationAction === 'create' && <StationModal isOpen={true} onRequestClose={() => setStationAction('')} mode='update'/>}
     </div>
   );
 };

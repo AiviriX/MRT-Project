@@ -11,6 +11,7 @@ import StationData from "./stationData";
 import { getStation } from "./manager";
 import { RetrieveMarker } from "./manager";
 import { stat } from "fs";
+import StationModal from "./crud/stationModal";
 
  
 
@@ -25,10 +26,12 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
     const [createStationMapClick, setCreateStationMapClick] = useState(false);
     const [polylinePositions, setPolylinePositions] = useState(stations.map(() => ([0,0])));
     const [connected, setConnected] = useState([]);
-    
+
     //Calls the function component createStation modal
     const invokeCreateStation = () => {
-        return <CreateStation isOpen={true} onRequestClose={()=>{setCreateStationMapClick(false)}} coordinates={[lat, lng]}/>
+        console.log('invokeCreateStation', lat, lng)
+        return <StationModal isOpen={true} onRequestClose={()=>{setCreateStationMapClick(false)}}
+        coordinates={[lat,lng]} mode='create'/>
     }
 
     useEffect(() => {

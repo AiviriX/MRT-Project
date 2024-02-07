@@ -1,3 +1,7 @@
+//Deprecated
+//This component is not used in the final version of the app
+//It is replaced by the StationModal component
+
 import { useState } from 'react';
 import Modal from 'react-modal';    
 
@@ -72,15 +76,10 @@ const CreateStation: React.FC<CreateStationProps> = ({ isOpen, onRequestClose: o
                     alert('Station Added Successfully');
                     onrequestClose();
                 }
-
-
             }
-
         } catch(error) {
             console.error('Error:', error);
         }
-        
-
     }
 
     return (
