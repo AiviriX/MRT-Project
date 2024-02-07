@@ -31,6 +31,8 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
     const [loading, setLoading] = useState<boolean>(false);
     const [connectedStations, setConnectedStations] = useState<string[]>([]);
     const [selectedConnectedStations, setSelectedConnectedStations] = useState<string[]>([]);
+    const [distances, setDistances] = useState<number>(0);
+  
 
     useEffect(() => {
         if (stationData){
@@ -70,7 +72,7 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
     useEffect(() => {
         const fetchConnectedStations = async () => {
             try {
-                if (stationData) {
+                if (isOpen && stationData) {
                     const connectedStations = await getConnectedStations(stationData);
                     setConnectedStations(connectedStations);
                 }
@@ -78,11 +80,27 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
                 console.error('Error fetching connected stations:', error);
             }
         };
+    
+        fetchConnectedStations();
+    }, [isOpen]);
+    
 
-        if (isOpen && stationData) {
-            fetchConnectedStations();
-        }
-    }, [isOpen, stationData]);
+    // useEffect(() => {
+    //     const fetchConnectedStations = async () => {
+    //         try {
+    //             if (stationData) {
+    //                 const connectedStations = await getConnectedStations(stationData);
+    //                 setConnectedStations(connectedStations);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching connected stations:', error);
+    //         }
+    //     };
+
+    //     if (isOpen && stationData) {
+    //         fetchConnectedStations();
+    //     }
+    // }, [isOpen, stationData]);
 
     useEffect(() => {
         const fetchConnectedStationsData = async () => {
@@ -106,6 +124,13 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
                 setLat(e.latlng.lat);
                 setLong(e.latlng.lng);
                 setMarkerPosition(e.latlng);   
+                allStations.forEach(station => {
+                    const distance = calculateDistance(
+                        { coordinates: [lat, long] } as StationData, 
+                        { coordinates: [station.coordinates[0], station.coordinates[1]] } as StationData
+                    );
+                    console.log(`Distance to ${station.stationName}: ${distance} meters`);
+                });
             },
         });
         return null;
@@ -195,10 +220,17 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
                     <label className='text-lg'>Connected Stations</label>
                     <Select
                         isMulti
-                        options={allStations.map(station => ({ value: station._id, label: station.stationName }))}
+                        options={allStations
+                            .filter(station => {
+                                const distance = calculateDistance(
+                                    { coordinates: [lat, long] } as StationData, 
+                                    { coordinates: [station.coordinates[0], station.coordinates[1]] } as StationData
+                                );
+                                return distance >= 500; // Filter out stations that are under 500 meters apart
+                            })
+                            .map(station => ({ value: station._id, label: station.stationName }))
+                        }
                         value={selectedConnectedStations.map(stationId => ({ value: stationId, label: allStations.find(station => station._id === stationId)?.stationName }))}
-                            
-                            
                         onChange={(selectedOptions: any) => {
                             const selectedStationIds = selectedOptions.map((option: any) => option.value);
                             setSelectedConnectedStations(selectedStationIds);

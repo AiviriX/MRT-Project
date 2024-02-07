@@ -32,13 +32,14 @@ fareRouter.get('/stations/getFare', async (req, res) => {
 });
 
 stationRouter.post('/stations/add', async (req, res) => {
-    const { stationName, coordinates } = req.body;
+    const { stationName, coordinates, connectedStation } = req.body;
     if (stationName === undefined || coordinates === undefined) {
         return res.status(400).json({ message: 'Please fill in all fields', stationName: `${stationName}`, coordinates: `${coordinates}` });
     } else {
         const station = new Station({
             stationName,
-            coordinates
+            coordinates,
+            connectedStation
         });
         await station.save();
         res.status(200).json({ message: `Station Added ${stationName}, ${coordinates}` });

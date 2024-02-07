@@ -7,7 +7,6 @@ export const calculateDistance = (station1: StationData, station2: StationData):
 
     const distance = latlng1.distanceTo(latlng2);
     // distance is in meters
-    console.log('distance', distance, 'meters')
     return distance;
 }
 

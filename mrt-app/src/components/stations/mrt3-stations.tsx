@@ -159,7 +159,7 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
                             </Marker>
                             {getpolyLines()}
                             {station.connectedStation?.map((connectedStationId: string) => {
-                                console.log('Connected station ID:', connectedStationId);
+                                // console.log('Connected station ID:', connectedStationId);
                                 return null;
                             })}
                         </>
