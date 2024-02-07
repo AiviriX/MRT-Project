@@ -3,7 +3,7 @@ export interface StationData {
     stationName: string,
     coordinates: number[],
     stationLineNum: number
-    connectedStations: string[]
+    connectedStation: string[]
 }
 
 export default StationData
