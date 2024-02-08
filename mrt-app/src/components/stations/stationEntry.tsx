@@ -2,7 +2,7 @@ import React from 'react';
 
 export interface StationProps {
   name: string;
-  position: [number, number];
+  position: number[];
   handleDelete: (name: string) => void;
   handleRefresh: () => void;
 }

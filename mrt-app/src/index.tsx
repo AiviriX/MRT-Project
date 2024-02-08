@@ -1,20 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-
 import MRTIndex from './homepage';
 import Navigation from './navigation';
-import AdminDashboard from './components/admin/control';
+import AdminDashboard from './components/admin/controlPanel';
 import StationIndex from './components/stations';
 import MRT3Stations from './components/stations/mrt3-stations';
 import AdminLogin from './components/admin/login';
 import CardManager from './components/cards/manager';
 import Fare from './components/stations/fare';
 import NoAccess from './noAccess';
+import StationModal from './components/stations/crud/stationModal';
 
 export const API_URL = 'http://localhost:5000';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -36,6 +39,7 @@ root.render(
           <Route path="/noaccess" element={<NoAccess/>} />
           <Route path="/setfare" element={ <Fare/> } />
           <Route path="*" element={ <h1> 404 Not Found </h1> } />
+          <Route path="/test" element={ <StationModal isOpen={true} onRequestClose={()=>null} mode='create'/> } />
         </Routes>
       </BrowserRouter>
   </React.StrictMode>

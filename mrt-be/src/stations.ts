@@ -32,13 +32,14 @@ fareRouter.get('/stations/getFare', async (req, res) => {
 });
 
 stationRouter.post('/stations/add', async (req, res) => {
-    const { stationName, coordinates } = req.body;
+    const { stationName, coordinates, connectedStation } = req.body;
     if (stationName === undefined || coordinates === undefined) {
         return res.status(400).json({ message: 'Please fill in all fields', stationName: `${stationName}`, coordinates: `${coordinates}` });
     } else {
         const station = new Station({
             stationName,
-            coordinates
+            coordinates,
+            connectedStation
         });
         await station.save();
         res.status(200).json({ message: `Station Added ${stationName}, ${coordinates}` });
@@ -58,6 +59,17 @@ stationRouter.get('/stations/get/:trainline', async (req, res) => {
     }
 });
 
+stationRouter.get('/stations/getconnection/:stationId', async (req, res) => {
+    const stationId = req.params.stationId;
+    const station = await Station.findById(stationId);
+    if (!station) {
+        return res.status(400).json({ message: `No station found with id ${stationId}`});
+    } else {
+        res.status(200).json(station.connectedStation);
+        
+    }
+});
+
 stationRouter.delete('/stations/delete', async (req, res) => {
     const stationName = req.body.stationName;
     const deletedStation = await Station.deleteOne({ stationName });
@@ -67,31 +79,37 @@ stationRouter.delete('/stations/delete', async (req, res) => {
         res.status(200).json({ message: `Deleted ${stationName}` });
     }
 }
-);
+)
 
 stationRouter.put('/stations/update', async (req, res) => {
-    const { stationName, coordinates } = req.body;
+    const { stationId, stationName, coordinates, connectedStation } = req.body;
     const updatedStation = await Station.findOneAndUpdate
-        ({ stationName }, { coordinates }, { new: true });
+        ({ _id: stationId }, { stationName, coordinates, connectedStation }, { new: true });
     if (!updatedStation) {
-        return res.status(400).json({ message: `No station found with name ${stationName}`});
+        return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {
-        res.status(200).json({ message: `Updated ${stationName} to ${coordinates}` });
+        res.status(200).json({ message: `Updated station with id ${stationId} to ${stationName}, ${coordinates}` });
     }
 });
 
 
 stationRouter.put('/stations/update', async (req, res) => {
     const { stationId, stationName, coordinates, connectedStations:[{}] } = req.body.stationId;
-    
     // Find the station by its ID
     const station = await Station.findById(stationId);
     if (!station) {
         return res.status(404).json({ message: 'Station not found' });
     }
-
-
     const updatedStation = await station.save();
-
     res.status(200).json(updatedStation);
+});
+
+stationRouter.get('/stations/getone/:stationId', async (req, res) => {
+    const stationId = req.params.stationId;
+    const station = await Station.findById(stationId);
+    if (!station) {
+        return res.status(400).json({ message: `No station found with id ${stationId}`});
+    } else {
+        res.status(200).json(station);
+    }
 });
