@@ -11,6 +11,10 @@ export const stationRouter = express.Router();
 const Fare = mongoose.model('fares', FareSchema);
 const Station = mongoose.model('mrt-3', StationSchema);
 
+function manageConnections() {
+     
+}
+
 fareRouter.put('/stations/setFare', async (req, res) => {
     const { fare } = req.body;
     
@@ -81,16 +85,66 @@ stationRouter.delete('/stations/delete', async (req, res) => {
 }
 )
 
+// stationRouter.put('/stations/update', async (req, res) => {
+//     const { stationId, stationName, coordinates, connectedStation } = req.body;
+
+//     //if connected stations != []
+//     //iterate through the array and run the getOne logic to check if the receiving stations exist
+//     //if not, then delete the index? pop from the data structure?
+//     //if yes, and the station is successfully found, then access the connectedStations value of the station
+//     //and add the requesting station to the receiving station's connectedStations array.
+
+//     //if the receiving station somehow has a connection to the requesting station but the requesting station does 
+//     //not have a connection to the receiving station then add the requesting station to the receiving station's connectedStations array.
+//     //We will only delete connections from the requesting station to prevent the receiving station from being isolated. 
+
+    
+ 
+//     const updatedStation = await Station.findOneAndUpdate
+//         ({ _id: stationId }, { stationName, coordinates, connectedStation }, { new: true });
+//     if (!updatedStation) {
+//         return res.status(400).json({ message: `No station found with id ${stationId}`});
+//     } else {
+//         res.status(200).json({ message: `Updated station with id ${stationId} to ${stationName}, ${coordinates}` });
+//     }
+// });
+
 stationRouter.put('/stations/update', async (req, res) => {
     const { stationId, stationName, coordinates, connectedStation } = req.body;
-    const updatedStation = await Station.findOneAndUpdate
-        ({ _id: stationId }, { stationName, coordinates, connectedStation }, { new: true });
+
+    // Iterate through connected stations
+    for (const connectedId of connectedStation) {
+        // Check if connected station exists
+        const existingStation = await Station.findById(connectedId);
+        if (!existingStation) {
+            // If connected station does not exist, remove it from the array
+            const index = connectedStation.indexOf(connectedId);
+            if (index > -1) {
+                connectedStation.splice(index, 1);
+            }
+        } else {
+            // If connected station exists, ensure bidirectional connection
+            if (!existingStation.connectedStation.includes(stationId)) {
+                existingStation.connectedStation.push(stationId);
+                await existingStation.save();
+            }
+        }
+    }
+
+    // Update the station
+    const updatedStation = await Station.findOneAndUpdate(
+        { _id: stationId }, 
+        { stationName, coordinates, connectedStation }, 
+        { new: true }
+    );
+
     if (!updatedStation) {
         return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {
         res.status(200).json({ message: `Updated station with id ${stationId} to ${stationName}, ${coordinates}` });
     }
 });
+
 
 
 stationRouter.put('/stations/update', async (req, res) => {

@@ -12,6 +12,30 @@ cardRouter.get('/cards/get', async (req, res) => {
     res.status(200).json(cards);
 })
 
+cardRouter.post('cards/tapIn', async (req, res) => {
+    const { uuid, sourceStation } = req.body;
+    if (uuid === undefined || sourceStation === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, sourceStation: `${sourceStation}` });
+    } else {
+        await Card.updateOne({ uuid }, { tappedIn: true, sourceStation });
+        res.status(200).json({ message: `Tapped in ${uuid} at ${sourceStation}` });
+    }
+});
+
+cardRouter.post('cards/tapOut', async (req, res) => {
+    const { uuid, destinationStation } = req.body;
+    if (uuid === undefined || destinationStation === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, destinationStation: `${destinationStation}` });
+    } else {
+        //calculateDistance
+        // const card = await Card.findOne({ uuid });
+        // const fare = card.calculateFare(destinationStation);
+        // const balance = card.balance - fare;
+        // await Card.updateOne({ uuid }, { tappedIn: false, balance });
+        // res.status(200).json({ message: `Tapped out ${uuid} at ${destinationStation}. Fare: ${fare}` });
+    }
+});
+
 cardRouter.get('/cards/getOne', async (req, res) => {
     const uuid = req.query.uuid;
     if (uuid === undefined) {

@@ -9,6 +9,7 @@ import CreateCard from '../cards/createCard';
 import CardEntry from './cardEntry';
 import { hasSessionToken } from '../../auth/sessionTokenManager';
 import { CardData } from './cardData';
+import { API_URL } from '../..';
 
 
 export const CardManager = () => {
@@ -112,7 +113,7 @@ export const CardManager = () => {
 //Handles the deletion of cards/
 export const deleteCard = async (uuid: string) => {
     try {
-        const response = await fetch(`http://localhost:5000/cards/delete?uuid=${uuid}`, {
+        const response = await fetch(`${API_URL}/cards/delete?uuid=${uuid}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -132,7 +133,7 @@ export const deleteCard = async (uuid: string) => {
 //Sets the balance and uuid instead of adding balance to the cards.
 export const overwriteCard = async (uuid: string, balance: number) => {
     try {
-        const response = await fetch(`http://localhost:5000/manage/cards/update?uuid=${uuid}`, {
+        const response = await fetch(`${API_URL}/manage/cards/update?uuid=${uuid}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -152,7 +153,7 @@ export const overwriteCard = async (uuid: string, balance: number) => {
 //Returns the json of the cards fetched from mongodb.
 export const getCardList = async () => {   
     try {
-        const response = await fetch('http://localhost:5000/cards/get', {
+        const response = await fetch('${API_URL}/cards/get', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -168,7 +169,7 @@ export const getCardList = async () => {
 
 export const getOneCard = async (uuid: string) =>{
     try {
-        const response = await fetch(`http://localhost:5000/cards/getOne?uuid=${uuid}`, {
+        const response = await fetch(`${API_URL}/cards/getOne?uuid=${uuid}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -193,20 +194,20 @@ export const getOneCard = async (uuid: string) =>{
 //True if the balance is added successfully, false if not.
 export const handleAddBalance = async (inputUuid : String, newBalance: Number) => {
     try {
-      const response = await fetch(`http://localhost:5000/cards/addBalance`, {
+      const response = await fetch(`${API_URL}/cards/addBalance`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json'  
         },
         body: JSON.stringify({ uuid: inputUuid, balance: newBalance})
       });
 
     
-      if (response.ok) {
-        return true
-    } else if (!response.ok){
-        return false;
-      }
+        if (response.ok) {
+            return true
+        } else if (!response.ok){
+            return false;
+        }
     } catch (error) {
       console.error(error);
     }

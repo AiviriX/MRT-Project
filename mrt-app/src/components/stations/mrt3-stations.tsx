@@ -169,4 +169,61 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
 
 }
 
+
+export const MRT3StationsExport: React.FC<RetrieveMarker> = ({ setSelectedMarker }) => {    
+    const trainLine = 'mrt-3';
+    const [stations, setStations] = useState<StationData[]>([]);
+    const [marker, setMarker] = useState({} as StationData);
+
+    useEffect(() => {
+        const fetchStations = async () => {
+            const data = await getStationList(trainLine);
+            setStations(data);
+        } 
+        fetchStations();
+    }, []);
+
+    const polyLines = stations.flatMap((station: StationData) =>
+        station.connectedStation?.map((connectedStationId: string) => {
+            const connectedStation = stations.find((s) => s._id === connectedStationId);
+            if (connectedStation) {
+                const positions: LatLngExpression[] = [
+                    [station.coordinates[0], station.coordinates[1]],
+                    [connectedStation.coordinates[0], connectedStation.coordinates[1]],
+                ];
+                return <Polyline key={`${station._id}-${connectedStation._id}`} color="black" positions={positions} />;
+            }
+            return null;
+        }) || []
+    );
+
+    return (
+        <>
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {stations.map((station) => (
+                <>
+                    <Marker 
+                        position={[station.coordinates[0], station.coordinates[1]]}
+                        eventHandlers={{
+                            click: () => {
+                                setMarker(station);
+                                setSelectedMarker && setSelectedMarker(station);
+                            }
+                        }}
+                    >
+                        <Popup>{station.stationName}</Popup>
+                    </Marker>
+                </>
+            ))}
+            {polyLines}
+        </>
+    );
+}
+
+
+
+
 export default MRT3Stations;
