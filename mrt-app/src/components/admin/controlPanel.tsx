@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import CardManager from '../cards/manager';
 import Fare from '../stations/fare';
 import StationsManager from '../stations/manager';
+import { TappingManager } from '../tapping/manager';
 
 const AdminDashboard = () => {
     const [hasToken, setToken] = useState(hasSessionToken())
@@ -22,6 +23,10 @@ const AdminDashboard = () => {
 
         if (action === 'stations') {
             return <StationsManager/>
+        }
+
+        if (action === 'tapping') {
+            return <TappingManager/>
         }
     };
 
@@ -50,6 +55,11 @@ const AdminDashboard = () => {
                             onClick={()=>setAction('stations')}
                             className='shrink w-full bg-black-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded'>
                                  Manage Stations
+                        </button>
+                        <button 
+                            onClick={()=>setAction('tapping')}
+                            className='shrink w-full bg-black-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'>
+                                 Tapping
                         </button>
                     </aside>
 

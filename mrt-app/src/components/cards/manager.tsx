@@ -8,13 +8,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CreateCard from '../cards/createCard';
 import CardEntry from './cardEntry';
 import { hasSessionToken } from '../../auth/sessionTokenManager';
+import { CardData } from './cardData';
 
-export interface CardData {
-    uuid: string;
-    balance: number;
-    tappedIn: boolean;
-    tappedInStation?: string;
-};
 
 export const CardManager = () => {
     const [cards, setCards] = useState<CardData[]>([]);
@@ -113,7 +108,7 @@ export const CardManager = () => {
     )
 }
 
-
+//FETCH REQUESTS
 //Handles the deletion of cards/
 export const deleteCard = async (uuid: string) => {
     try {
@@ -171,8 +166,7 @@ export const getCardList = async () => {
 
 }
 
-export const getOneCard = async (uuid: string): Promise<CardData | null> => {
-    console.log('eep!' + uuid)
+export const getOneCard = async (uuid: string) =>{
     try {
         const response = await fetch(`http://localhost:5000/cards/getOne?uuid=${uuid}`, {
             method: 'GET',

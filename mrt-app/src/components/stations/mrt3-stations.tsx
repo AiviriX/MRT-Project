@@ -7,7 +7,7 @@ import { Polyline } from 'react-leaflet';
 import { useEffect, useState } from "react";
 import { LatLng, LatLngExpression } from "leaflet";
 import StationData from "./stationData";
-import { getStation } from "./manager";
+import { getStationList } from "./manager";
 import { RetrieveMarker } from "./manager";
 import { stat } from "fs";
 import StationModal from "./crud/stationModal";
@@ -75,7 +75,7 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
 
     useEffect(() => {
         const fetchStations = async () => {
-            const data = await getStation(trainLine);
+            const data = await getStationList(trainLine);
             console.log('data', data);
             setStations(data);
             data.map((station: StationData) => {

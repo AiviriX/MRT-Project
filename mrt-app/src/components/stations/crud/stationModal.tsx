@@ -8,10 +8,10 @@ import Modal from 'react-modal';
 import { MapContainer, useMapEvents, TileLayer, Marker } from 'react-leaflet';
 import { LatLng } from 'leaflet';
 import Select from 'react-select';
-import { fetchStationData, getConnectedStations, getStation } from '../manager';
+import { fetchStationData, getConnectedStations, getStationList } from '../manager';
 import { API_URL } from '../../..';
 import { StationData } from '../stationData';
-import calculateDistance from '../distanceCalculator';
+import calculateDistance from '../../distanceCalculator';
 
 interface StationProps {
     isOpen: boolean;
@@ -55,7 +55,7 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const stations = await getStation('mrt-3');
+                const stations = await getStationList('mrt-3');
                 setAllStations(stations);
                 setLoading(false);  
             } catch (error) {

@@ -196,7 +196,7 @@ const createStation = async (station: Station) => {
 }
 
 //Returns the list of stations from the db
-export const getStation = async (trainLine: String) => {
+export const getStationList = async (trainLine: String) => {
   try {
     const response = await fetch(`${API_URL}/stations/get/${trainLine}`);
     const data = await response.json();
