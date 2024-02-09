@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import { CardSchema } from '../db/schemas';
 import { StationModel } from '../src/stations';
 import { findShortestPath } from '../src/bfs';
+import path from 'path';
 const cardRouter = express.Router();
 const Card = mongoose.model('cards', CardSchema);
 
@@ -59,19 +60,15 @@ cardRouter.post('/cards/tap/out', async (req, res) => {
         if (card.tappedIn) {
             if (card.sourceStation && station._id) {
                 const path = await findShortestPath(card.sourceStation, station._id.toString());
-                if (path) {
-                    console.log(path);
-                }
             }
-
-            
             await Card.updateOne({ uuid: cardData.uuid }, { tappedIn: false, sourceStation: '' });  
+
         } else {
 
             return res.status(403).json({ message: `Card ${cardData.uuid} is already tapped out` });
         }
-
-        res.status(201).json({ message: `Tapped out ${cardData.uuid} at ${stationData.stationName}` });
+        
+        res.status(201).json({ message: `Tapped out ${cardData.uuid} at ${stationData.stationName} with path ${path}` });
     }
 }
 );

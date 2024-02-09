@@ -6,7 +6,7 @@ import Modal from 'react-modal'
 
 import CardData from "../cards/cardData";
 import StationData from "../stations/stationData";
-import { getOneCard, getCardList, tapInCard } from "../cards/manager";
+import { getOneCard, getCardList, tapInCard, tapOutCard } from "../cards/manager";
 import { getOneStation, getStationList } from "../stations/manager";
 // import { calculateDistance } from "../distanceCalculator"
 import { MRT3StationsExport } from "../stations/mrt3-stations";
@@ -26,7 +26,8 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
     const [allStations, setAllStations] = useState<StationData[]>([])
     const [fare, setFare] = useState(0);
     const [tapModalAction, setTapModalAction] = useState('');
-    const [tappingOpen, setTappingOpen] = useState(false);
+    const [tapInOpen, setTapInOpen] = useState(false);
+    const [tapOutOpen, setTapOutOpen] = useState(false);
 
     //When marker is clicked, set it as the selected station
     const handleMarkerClick = (marker: StationData) => {
@@ -69,7 +70,14 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
     const handleTapIn = async (cardData: CardData, stationData:StationData) => {
         if (window.confirm('Are you sure to tap in?')) {
             await tapInCard(cardData, stationData);
-            setTappingOpen(true);
+            setTapInOpen(true);
+        }
+    }
+
+    const handleTapOut = async (cardData: CardData, stationData:StationData) => {
+        if (window.confirm('Are you sure to tap out?')) {
+            await tapOutCard(cardData, stationData);
+            setTapOutOpen(true);
         }
     }
 
@@ -159,12 +167,12 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
             </div>
             <div className="space-y-2">
                     <button className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => setTappingOpen(true)}
+                        onClick={() => setTapInOpen(true)}
                     >
                         Tap IN
                     </button>
                     <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => setTappingOpen(true)}
+                        onClick={() => setTapOutOpen(true)}
                     >
                         Tap OUT
                     </button>
@@ -187,9 +195,9 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
         <section className="mt-10">
             
         {
-            tappingOpen && selectedCard && selectedStation &&
+            tapInOpen && selectedCard && selectedStation &&
             <Modal
-                isOpen={tappingOpen}
+                isOpen={tapInOpen}
                 style={{
                     content: {
                         width: '500px', // Set the width of the modal
@@ -215,7 +223,45 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                         Submit
                     </button>
                     <button
-                        onClick={()=>setTappingOpen(false)} //close modal
+                        onClick={()=>setTapInOpen(false)} //close modal
+                        className="p-2 bg-red-500 text-white rounded w-full"
+                    >
+                        Close
+                    </button>
+                </div>
+            </Modal>
+        }
+
+        {
+        tapOutOpen && selectedCard && selectedStation &&
+            <Modal
+                isOpen={tapOutOpen}
+                style={{
+                    content: {
+                        width: '500px', // Set the width of the modal
+                        height: 'auto', // Set the height of the modal
+                        margin: 'auto'
+                    },
+                }}
+                >
+                <div className="flex flex-col space-y-4">
+                    <h1 className="text-2xl font-bold">Are you sure to tap out?</h1>
+                    <div>Card ID: {selectedCard.uuid} </div>
+                    <div>Card Balance: {selectedCard.balance}</div>
+                    <div className='border-2 rounded '></div>
+                    <div>To:</div>
+                    {/* <div>Station ID: {selectedStation._id}</div> */}
+                    <div>Station Name: {selectedStation.stationName}</div>
+                    <div className="text-xs italic">Note: Destination station will be registered in the card for fare calculation.</div>
+                    <div className="text-xs italic">Misuse of card tapping may incur an exit mismatch fee</div>
+                    <button
+                        onClick={()=>handleTapOut(selectedCard, selectedStation)} //tap out logic here
+                        className="p-2 bg-green-500 text-white rounded w-full"
+                    >
+                        Submit
+                    </button>
+                    <button
+                        onClick={()=>setTapOutOpen(false)} //close modal
                         className="p-2 bg-red-500 text-white rounded w-full"
                     >
                         Close

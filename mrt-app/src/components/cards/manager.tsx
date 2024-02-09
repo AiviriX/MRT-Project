@@ -170,6 +170,25 @@ export const tapInCard = async (cardData: CardData, stationData: StationData) =>
     }
 }
 
+export const tapOutCard = async (cardData: CardData, stationData: StationData) => {
+    try {
+        const response = await fetch(`${API_URL}/cards/tap/out`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({cardData, stationData}), //Values for the card
+        });
+    
+        const data = await response.json();
+        if (response.ok){
+            alert('Card Updated Successfully')
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 //Returns the json of the cards fetched from mongodb.
 export const getCardList = async () => {   
     try {

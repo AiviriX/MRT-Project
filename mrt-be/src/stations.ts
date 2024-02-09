@@ -54,7 +54,6 @@ stationRouter.get('/stations/get/:trainline', async (req, res) => {
     const trainline = req.params.trainline;
     const stations = mongoose.model(trainline.toLowerCase(), StationSchema);
     const x = await stations.find({})
-    console.log(x)
 
     if (x.length === 0) {
         return res.status(400).json({ message: `No stations found for ${trainline}`});
