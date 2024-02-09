@@ -96,7 +96,7 @@ stationRouter.delete('/stations/delete', async (req, res) => {
 
 //     //if the receiving station somehow has a connection to the requesting station but the requesting station does 
 //     //not have a connection to the receiving station then add the requesting station to the receiving station's connectedStations array.
-//     //We will only delete connections from the requesting station to prevent the receiving station from being isolated. 
+//     
 
     
  

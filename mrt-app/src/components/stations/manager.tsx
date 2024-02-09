@@ -75,7 +75,6 @@ export const StationsManager = () => {
 
   useEffect(() => {
     // Your code that should run when the component "reloads"
-  
   }, [reload]);
 
 
@@ -98,8 +97,6 @@ export const StationsManager = () => {
           <StationEntry key={index} name={station.stationName} position={station.coordinates} handleDelete={deleteStation} handleRefresh={() => {}} />
         ));
       }
-
-    
     };
     renderAction()
   },[stationAction])
@@ -111,11 +108,6 @@ export const StationsManager = () => {
         <aside className="flex flex-col w-48 h-auto bg-gray-800 text-white p-6 space-y-6">
             <h1 className="text-xl font-bold">Stations Manager</h1>
             <p className='justify'>You can also click the map, and the new marker to create a station</p>
-            {/* <button
-              onClick={() => setStationAction('')}
-              className="w-full bg-gray-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Create Station
-            </button> */}
             <button
               onClick={() => setStationAction('read')}
               className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">

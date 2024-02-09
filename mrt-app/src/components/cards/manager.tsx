@@ -153,7 +153,7 @@ export const overwriteCard = async (uuid: string, balance: number) => {
 //Returns the json of the cards fetched from mongodb.
 export const getCardList = async () => {   
     try {
-        const response = await fetch('${API_URL}/cards/get', {
+        const response = await fetch(`${API_URL}/cards/get`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
