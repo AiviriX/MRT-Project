@@ -7,9 +7,9 @@ import { stat } from "fs";
 
 export const fareRouter = express.Router();
 export const stationRouter = express.Router();
+export const StationModel = mongoose.model('mrt-3', StationSchema);
 
 const Fare = mongoose.model('fares', FareSchema);
-const Station = mongoose.model('mrt-3', StationSchema);
 
 function manageConnections() {
      
@@ -40,7 +40,7 @@ stationRouter.post('/stations/add', async (req, res) => {
     if (stationName === undefined || coordinates === undefined) {
         return res.status(400).json({ message: 'Please fill in all fields', stationName: `${stationName}`, coordinates: `${coordinates}` });
     } else {
-        const station = new Station({
+        const station = new StationModel({
             stationName,
             coordinates,
             connectedStation
@@ -65,7 +65,7 @@ stationRouter.get('/stations/get/:trainline', async (req, res) => {
 
 stationRouter.get('/stations/getconnection/:stationId', async (req, res) => {
     const stationId = req.params.stationId;
-    const station = await Station.findById(stationId);
+    const station = await StationModel.findById(stationId);
     if (!station) {
         return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {
@@ -76,7 +76,7 @@ stationRouter.get('/stations/getconnection/:stationId', async (req, res) => {
 
 stationRouter.delete('/stations/delete', async (req, res) => {
     const stationName = req.body.stationName;
-    const deletedStation = await Station.deleteOne({ stationName });
+    const deletedStation = await StationModel.deleteOne({ stationName });
     if (!deletedStation) {
         return res.status(400).json({ message: `No station found with name ${stationName}`});
     } else {
@@ -115,7 +115,7 @@ stationRouter.put('/stations/update', async (req, res) => {
     // Iterate through connected stations
     for (const connectedId of connectedStation) {
         // Check if connected station exists
-        const existingStation = await Station.findById(connectedId);
+        const existingStation = await StationModel.findById(connectedId);
         if (!existingStation) {
             // If connected station does not exist, remove it from the array
             const index = connectedStation.indexOf(connectedId);
@@ -132,7 +132,7 @@ stationRouter.put('/stations/update', async (req, res) => {
     }
 
     // Update the station
-    const updatedStation = await Station.findOneAndUpdate(
+    const updatedStation = await StationModel.findOneAndUpdate(
         { _id: stationId }, 
         { stationName, coordinates, connectedStation }, 
         { new: true }
@@ -150,7 +150,7 @@ stationRouter.put('/stations/update', async (req, res) => {
 stationRouter.put('/stations/update', async (req, res) => {
     const { stationId, stationName, coordinates, connectedStations:[{}] } = req.body.stationId;
     // Find the station by its ID
-    const station = await Station.findById(stationId);
+    const station = await StationModel.findById(stationId);
     if (!station) {
         return res.status(404).json({ message: 'Station not found' });
     }
@@ -160,7 +160,7 @@ stationRouter.put('/stations/update', async (req, res) => {
 
 stationRouter.get('/stations/getone/:stationId', async (req, res) => {
     const stationId = req.params.stationId;
-    const station = await Station.findById(stationId);
+    const station = await StationModel.findById(stationId);
     if (!station) {
         return res.status(400).json({ message: `No station found with id ${stationId}`});
     } else {

@@ -7,14 +7,13 @@ import { StationSchema, AdminSchema } from '../db/schemas';
 
 import adminRouter from './admin';
 import cardRouter from './cards';
-import { fareRouter, stationRouter } from './stations';
+import { fareRouter, stationRouter, StationModel } from './stations';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3001
 
 mongoose.connect(process.env.MONGODB_URI || '');
-const Stations = mongoose.model('mrt-3', StationSchema)
 
 const startServer = (app: express.Express) => {
   app.use("/", adminRouter);
@@ -39,7 +38,7 @@ const startServer = (app: express.Express) => {
 
   //Get request to display stations
   app.get("/stations", async (req, res) => {
-    const data = await Stations.find({  });
+    const data = await StationModel.find({  });
     res.json(data);
     res.status(200);
   });

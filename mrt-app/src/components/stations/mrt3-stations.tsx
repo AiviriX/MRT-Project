@@ -9,7 +9,6 @@ import { LatLng, LatLngExpression } from "leaflet";
 import StationData from "./stationData";
 import { getStationList } from "./manager";
 import { RetrieveMarker } from "./manager";
-import { stat } from "fs";
 import StationModal from "./crud/stationModal";
 
  

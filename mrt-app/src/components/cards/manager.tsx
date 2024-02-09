@@ -10,6 +10,7 @@ import CardEntry from './cardEntry';
 import { hasSessionToken } from '../../auth/sessionTokenManager';
 import { CardData } from './cardData';
 import { API_URL } from '../..';
+import StationData from '../stations/stationData';
 
 
 export const CardManager = () => {
@@ -131,7 +132,7 @@ export const deleteCard = async (uuid: string) => {
 }
 
 //Sets the balance and uuid instead of adding balance to the cards.
-export const overwriteCard = async (uuid: string, balance: number) => {
+export const updateCard = async (uuid: string, balance: number) => {
     try {
         const response = await fetch(`${API_URL}/manage/cards/update?uuid=${uuid}`, {
             method: 'PUT',
@@ -139,6 +140,25 @@ export const overwriteCard = async (uuid: string, balance: number) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({uuid, balance}), //Values for the card
+        });
+    
+        const data = await response.json();
+        if (response.ok){
+            alert('Card Updated Successfully')
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const tapInCard = async (cardData: CardData, stationData: StationData) => {
+    try {
+        const response = await fetch(`${API_URL}/cards/tap/in`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({cardData, stationData}), //Values for the card
         });
     
         const data = await response.json();
@@ -167,6 +187,7 @@ export const getCardList = async () => {
 
 }
 
+//params idk why
 export const getOneCard = async (uuid: string) =>{
     try {
         const response = await fetch(`${API_URL}/cards/getOne?uuid=${uuid}`, {

@@ -2,7 +2,7 @@ export interface StationData {
     _id: string,
     stationName: string,
     coordinates: number[],
-    stationLineNum: number
+    stationLineNum?: number
     connectedStation: string[]
 }
 
