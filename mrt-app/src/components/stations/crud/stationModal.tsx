@@ -83,24 +83,6 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
     
         fetchConnectedStations();
     }, [isOpen]);
-    
-
-    // useEffect(() => {
-    //     const fetchConnectedStations = async () => {
-    //         try {
-    //             if (stationData) {
-    //                 const connectedStations = await getConnectedStations(stationData);
-    //                 setConnectedStations(connectedStations);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching connected stations:', error);
-    //         }
-    //     };
-
-    //     if (isOpen && stationData) {
-    //         fetchConnectedStations();
-    //     }
-    // }, [isOpen, stationData]);
 
     useEffect(() => {
         const fetchConnectedStationsData = async () => {

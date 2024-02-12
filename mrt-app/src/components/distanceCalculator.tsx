@@ -1,5 +1,6 @@
 import { LatLng } from 'leaflet';
 import StationData from './stations/stationData';
+import { getFare } from './stations/fare';
 
 export const calculateDistance = (station1: StationData, station2: StationData): number => {
     const latlng1 = new LatLng(station1.coordinates[0], station1.coordinates[1]);

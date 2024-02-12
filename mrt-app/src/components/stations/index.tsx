@@ -122,7 +122,7 @@ const Stations = () => {
                                     <h1> Card UUID: {searchCardEntry?.uuid} </h1>
                                     <h1> Card Balance: {searchCardEntry?.balance} </h1>
                                     <h1> Card Tapped In: {searchCardEntry?.tappedIn.toString()} </h1>
-                                    <h1> Card Source Station: {searchCardEntry?.tappedInStation} </h1>
+                                    <h1> Card Source Station: {searchCardEntry?.sourceStation} </h1>
                                 </div>
                                   :
                                 <h1> Card Not Found </h1>}

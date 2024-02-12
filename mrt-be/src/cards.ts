@@ -3,8 +3,8 @@ import mongoose from 'mongoose'
 import crypto from 'crypto';
 
 import { CardSchema } from '../db/schemas';
-import { StationModel } from '../src/stations';
-import { findShortestPath } from '../src/bfs';
+import { Fare, StationModel } from '../src/stations';
+import { calculateTotalFare, findShortestPath } from '../src/bfs';
 import path from 'path';
 const cardRouter = express.Router();
 const Card = mongoose.model('cards', CardSchema);
@@ -47,6 +47,8 @@ cardRouter.post('/cards/tap/out', async (req, res) => {
     if (cardData === undefined || stationData === undefined) {
         return res.status(400).json({ message: 'Please fill in all fields', cardData: `${cardData}`, stationData: `${stationData}` });
     } else {
+        let totalFare = 0;
+        const farePerKm = await Fare.find({});
         const card = await Card.findOne({ uuid: cardData.uuid });
         const station = await StationModel.findOne({ stationName: stationData.stationName });
         if (!card) {
@@ -59,34 +61,30 @@ cardRouter.post('/cards/tap/out', async (req, res) => {
 
         if (card.tappedIn) {
             if (card.sourceStation && station._id) {
-                const path = await findShortestPath(card.sourceStation, station._id.toString());
+                const path = await findShortestPath(card.sourceStation.stationId ?? '', station._id.toString());
+                console.log(path);
+                if (path.coordinates) {
+                    totalFare = await calculateTotalFare(path.coordinates, farePerKm[0].farePerKm ?? 0);
+                    console.log('tutla' + totalFare);
+                }
             }
-            await Card.updateOne({ uuid: cardData.uuid }, { tappedIn: false, sourceStation: '' });  
+            const newBalance = (card.balance ?? 0) - totalFare;
+            console.log('oldbalan' + card.balance)
+            console.log('newbalan' + newBalance);
 
+            if (newBalance < 0) {
+                return res.status(403).json({ message: `Insufficient balance for card ${cardData.uuid}` });
+            } else {
+                await Card.updateOne({ uuid: cardData.uuid }, { tappedIn: false, sourceStation: '', balance: newBalance });  
+            }
         } else {
-
             return res.status(403).json({ message: `Card ${cardData.uuid} is already tapped out` });
         }
-        
         res.status(201).json({ message: `Tapped out ${cardData.uuid} at ${stationData.stationName} with path ${path}` });
     }
 }
 );
 
-
-// cardRouter.post('cards/tap/out', async (req, res) => {
-//     const { uuid, sourceStation, destinationStation } = req.body;
-//     if (uuid === undefined || destinationStation === undefined) {
-//         return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, destinationStation: `${destinationStation}` });
-//     } else {
-//         //calculateDistance
-//         // const card = await Card.findOne({ uuid });
-//         // const fare = card.calculateFare(destinationStation);
-//         // const balance = card.balance - fare;
-//         // await Card.updateOne({ uuid }, { tappedIn: false, balance });
-//         // res.status(200).json({ message: `Tapped out ${uuid} at ${destinationStation}. Fare: ${fare}` });
-//     }
-// });
 
 cardRouter.get('/cards/getOne', async (req, res) => {
     const uuid = req.query.uuid;

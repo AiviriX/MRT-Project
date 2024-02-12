@@ -4,7 +4,11 @@ export const CardSchema = new Schema({
     uuid: Number,
     balance: Number,
     tappedIn: Boolean,
-    sourceStation: String,
+    sourceStation: {
+        stationId: String,
+        stationName: String,
+        coordinates: [Number],
+    }
 })
 
 export const StationSchema = new Schema({

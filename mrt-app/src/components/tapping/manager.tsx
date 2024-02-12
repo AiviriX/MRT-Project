@@ -68,17 +68,13 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
     }
 
     const handleTapIn = async (cardData: CardData, stationData:StationData) => {
-        if (window.confirm('Are you sure to tap in?')) {
             await tapInCard(cardData, stationData);
             setTapInOpen(true);
-        }
     }
 
     const handleTapOut = async (cardData: CardData, stationData:StationData) => {
-        if (window.confirm('Are you sure to tap out?')) {
             await tapOutCard(cardData, stationData);
             setTapOutOpen(true);
-        }
     }
 
     useEffect(() => {
@@ -135,7 +131,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                                     <div className="text-gray-500">Card UID: {selectedCard.uuid}</div>
                                     <div className="text-gray-900">Remaining Balance: {selectedCard.balance} </div>
                                     <div className="text-gray-900">Tapped In: {selectedCard.tappedIn.toString()} </div>
-                                    <div className="text-gray-900">Station Source: {selectedCard.tappedInStation}</div>
+                                    <div className="text-gray-900">Station Source: {selectedCard.sourceStation}</div>
                                 </div>
                             ) : (
                                 <div>
@@ -155,6 +151,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                             <div className="text-sm font-medium">Station Information</div>
                             <div> Station Name: {selectedStation.stationName} </div>
                             <div> Coordinates: {selectedStation.coordinates[0]}, {selectedStation.coordinates[1]} </div>
+                            {/* <div> Connected Stations: {selectedStation.connectedStation} </div> */}
                         </div>
 
                     ) : (
@@ -248,12 +245,13 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                     <h1 className="text-2xl font-bold">Are you sure to tap out?</h1>
                     <div>Card ID: {selectedCard.uuid} </div>
                     <div>Card Balance: {selectedCard.balance}</div>
+                    <div>Tapped in at: {selectedCard.sourceStation} </div>
                     <div className='border-2 rounded '></div>
                     <div>To:</div>
                     {/* <div>Station ID: {selectedStation._id}</div> */}
                     <div>Station Name: {selectedStation.stationName}</div>
                     <div className="text-xs italic">Note: Destination station will be registered in the card for fare calculation.</div>
-                    <div className="text-xs italic">Misuse of card tapping may incur an exit mismatch fee</div>
+                    <div className="text-xs italic">Misuse of card tapping may incur an entry mismatch fee</div>
                     <button
                         onClick={()=>handleTapOut(selectedCard, selectedStation)} //tap out logic here
                         className="p-2 bg-green-500 text-white rounded w-full"

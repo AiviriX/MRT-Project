@@ -90,7 +90,7 @@ export const CardManager = () => {
                                                 uuid={card.uuid}
                                                 balance={card.balance}
                                                 tappedIn={card.tappedIn}
-                                                sourceStation={card.tappedInStation}
+                                                sourceStation={card.sourceStation}
                                                 handleDelete={handleDelete}
                                                 handleRefresh={refreshCardListFromChild}
                                             />
@@ -181,6 +181,7 @@ export const tapOutCard = async (cardData: CardData, stationData: StationData) =
         });
     
         const data = await response.json();
+
         if (response.ok){
             alert('Card Updated Successfully')
         }

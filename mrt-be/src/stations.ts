@@ -9,7 +9,7 @@ export const fareRouter = express.Router();
 export const stationRouter = express.Router();
 export const StationModel = mongoose.model('mrt-3', StationSchema);
 
-const Fare = mongoose.model('fares', FareSchema);
+export const Fare = mongoose.model('fares', FareSchema);
 
 function manageConnections() {
      
@@ -83,30 +83,6 @@ stationRouter.delete('/stations/delete', async (req, res) => {
     }
 }
 )
-
-// stationRouter.put('/stations/update', async (req, res) => {
-//     const { stationId, stationName, coordinates, connectedStation } = req.body;
-
-//     //if connected stations != []
-//     //iterate through the array and run the getOne logic to check if the receiving stations exist
-//     //if not, then delete the index? pop from the data structure?
-//     //if yes, and the station is successfully found, then access the connectedStations value of the station
-//     //and add the requesting station to the receiving station's connectedStations array.
-
-//     //if the receiving station somehow has a connection to the requesting station but the requesting station does 
-//     //not have a connection to the receiving station then add the requesting station to the receiving station's connectedStations array.
-//     
-
-    
- 
-//     const updatedStation = await Station.findOneAndUpdate
-//         ({ _id: stationId }, { stationName, coordinates, connectedStation }, { new: true });
-//     if (!updatedStation) {
-//         return res.status(400).json({ message: `No station found with id ${stationId}`});
-//     } else {
-//         res.status(200).json({ message: `Updated station with id ${stationId} to ${stationName}, ${coordinates}` });
-//     }
-// });
 
 stationRouter.put('/stations/update', async (req, res) => {
     const { stationId, stationName, coordinates, connectedStation } = req.body;

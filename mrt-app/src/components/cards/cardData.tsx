@@ -2,7 +2,7 @@ export interface CardData {
     uuid: string;
     balance: number;
     tappedIn: boolean;
-    tappedInStation?: string;
+    sourceStation?: string;
 };
 
 export default CardData;
