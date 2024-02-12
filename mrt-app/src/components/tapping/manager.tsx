@@ -13,6 +13,7 @@ import { MRT3StationsExport } from "../stations/mrt3-stations";
 import { updateCard } from "../cards/manager"; 
 
 import { API_URL } from "../.."
+import calculateDistance from "../distanceCalculator";
 
 interface TappingManagerProps {
     cardProp?: CardData
@@ -21,6 +22,7 @@ interface TappingManagerProps {
 
 export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, stationProp}) => {
     const [selectedCard, setSelectedCard] = useState<CardData>()
+    const [selectedCardThing, setSelectedCardThing] = useState<StationData>()
     const [allCards, setAllCards] = useState<CardData[]>([])
     const [selectedStation, setSelectedStation] = useState<StationData>()
     const [allStations, setAllStations] = useState<StationData[]>([])
@@ -28,18 +30,24 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
     const [tapModalAction, setTapModalAction] = useState('');
     const [tapInOpen, setTapInOpen] = useState(false);
     const [tapOutOpen, setTapOutOpen] = useState(false);
+    const [totalDistance, setTotalDistance] = useState(0);
 
     //When marker is clicked, set it as the selected station
     const handleMarkerClick = (marker: StationData) => {
         setSelectedStation(marker);
     }
 
-    const searchForCard = async (param: string) => {     
+    const searchForCardStation = async (param: string) => {     
         if (param) {
             const cardData = await getCard(param)
             setSelectedCard(cardData)
+            if (cardData.sourceStation) {
+                const stationData = await getStation(cardData.sourceStation);
+                setSelectedCardThing(stationData);
+            }
         }
     }
+    
 
     //These functions uses the fetch functions from their respective managers to get the data from the database.
     const getCard = async (uuid: string) : Promise<CardData> => {
@@ -112,7 +120,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                     type="number"
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
-                            searchForCard(e.currentTarget.value)
+                            searchForCardStation(e.currentTarget.value)
                         }
                     }}
                 />
@@ -131,7 +139,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                                     <div className="text-gray-500">Card UID: {selectedCard.uuid}</div>
                                     <div className="text-gray-900">Remaining Balance: {selectedCard.balance} </div>
                                     <div className="text-gray-900">Tapped In: {selectedCard.tappedIn.toString()} </div>
-                                    <div className="text-gray-900">Station Source: {selectedCard.sourceStation}</div>
+                                    <div className="text-gray-900">Station Source: {selectedCard.sourceStationName}</div>
                                 </div>
                             ) : (
                                 <div>
@@ -207,6 +215,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                     <h1 className="text-2xl font-bold">Are you sure to tap in?</h1>
                         <div>Card ID: {selectedCard.uuid} </div>
                         <div>Card Balance: {selectedCard.balance}</div>
+                        <div>Base Fare:</div>
                     <div className='border-2 rounded '></div>
                         <div>From:</div>
                         {/* <div>Station ID: {selectedStation._id}</div> */}
@@ -242,16 +251,23 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                 }}
                 >
                 <div className="flex flex-col space-y-4">
-                    <h1 className="text-2xl font-bold">Are you sure to tap out?</h1>
+                    <h1 className="text-2xl font-bold">Are you sure you want to tap out?</h1>
                     <div>Card ID: {selectedCard.uuid} </div>
                     <div>Card Balance: {selectedCard.balance}</div>
-                    <div>Tapped in at: {selectedCard.sourceStation} </div>
+                    <div>Tapped in at: {selectedCard.sourceStationName} </div>
+                    <div>Coordinates: </div>
+                    <div>{selectedCard.coordinates?.[0]}</div>
+                    <div>{selectedCard.coordinates?.[1]}</div>
                     <div className='border-2 rounded '></div>
-                    <div>To:</div>
-                    {/* <div>Station ID: {selectedStation._id}</div> */}
-                    <div>Station Name: {selectedStation.stationName}</div>
-                    <div className="text-xs italic">Note: Destination station will be registered in the card for fare calculation.</div>
-                    <div className="text-xs italic">Misuse of card tapping may incur an entry mismatch fee</div>
+                    <div>Tapping out at: {selectedStation.stationName}</div>
+                    <div>Coordinates: {selectedStation.coordinates} </div>
+                    <div>Total Distance: 
+                        { } 
+                     </div>
+                    <div>Fare Price: {  } </div>
+                    <div>Balance Remaining:{ }</div>
+                    {/* <div className="text-xs italic">Note: Destination station will be registered in the card for fare calculation.</div>
+                    <div className="text-xs italic">Misuse of card tapping may incur an entry mismatch fee</div> */}
                     <button
                         onClick={()=>handleTapOut(selectedCard, selectedStation)} //tap out logic here
                         className="p-2 bg-green-500 text-white rounded w-full"

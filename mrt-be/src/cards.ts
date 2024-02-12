@@ -4,7 +4,7 @@ import crypto from 'crypto';
 
 import { CardSchema } from '../db/schemas';
 import { Fare, StationModel } from '../src/stations';
-import { calculateTotalFare, findShortestPath } from '../src/bfs';
+import { calculateDistance, calculateTotalFare, findShortestPath } from '../src/bfs';
 import path from 'path';
 const cardRouter = express.Router();
 const Card = mongoose.model('cards', CardSchema);
@@ -30,7 +30,9 @@ cardRouter.post('/cards/tap/in', async (req, res) => {
         }
 
         if (!card.tappedIn) {
-            await Card.updateOne({ uuid: cardData.uuid }, { tappedIn: true, sourceStation: stationData._id});  
+            await Card.updateOne({ uuid: cardData.uuid }, 
+                { tappedIn: true, sourceStation: stationData._id,
+                sourceStationName: stationData.stationName, coordinates: stationData.coordinates }, { new: true });  
         } else {
             //IF source station same as destination station
             //card is already tapped in
@@ -61,11 +63,11 @@ cardRouter.post('/cards/tap/out', async (req, res) => {
 
         if (card.tappedIn) {
             if (card.sourceStation && station._id) {
-                const path = await findShortestPath(card.sourceStation.stationId ?? '', station._id.toString());
-                console.log(path);
-                if (path.coordinates) {
-                    totalFare = await calculateTotalFare(path.coordinates, farePerKm[0].farePerKm ?? 0);
-                    console.log('tutla' + totalFare);
+                const {path , stationNames , coordinates} = await findShortestPath(card.sourceStation ?? '', station._id.toString());
+                console.log(coordinates);
+                if (coordinates) {
+                    totalFare = await calculateTotalFare(coordinates, farePerKm[0].farePerKm ?? 0);
+                    console.log('total' + totalFare);
                 }
             }
             const newBalance = (card.balance ?? 0) - totalFare;
@@ -84,6 +86,23 @@ cardRouter.post('/cards/tap/out', async (req, res) => {
     }
 }
 );
+
+cardRouter.get('/calculateFare', async (req, res) => {
+    const { coords } = req.body;
+    const farePerKm = await Fare.find({});
+
+    const fare = await calculateTotalFare(coords, farePerKm[0].farePerKm ?? 0);
+
+    res.status(200).json({fare});
+}
+);
+
+cardRouter.get('/calculateTotalDistance', async (req, res) => {
+    const {coords} = req.body;
+    const distance = await calculateDistance(coords);
+
+    res.status(200).json({distance});
+});
 
 
 cardRouter.get('/cards/getOne', async (req, res) => {
@@ -118,7 +137,8 @@ cardRouter.post('/cards/add', async (req, res) => {
             uuid,
             balance,
             tappedIn,
-            sourceStation: ''
+            sourceStation: '',
+            sourceStationName: ''
         });
     await card.save();
     res.status(200).json({ message: `Card Added ${ uuid }, ${balance}` });
@@ -136,32 +156,5 @@ cardRouter.put('/cards/addBalance', async (req, res) => {
     }
 }
 );
-
-cardRouter.put('/cards/tapIn', async (req, res) => {
-    const { uuid, sourceStation } = req.body;
-    if (uuid === undefined || sourceStation === undefined) {
-        return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, sourceStation: `${sourceStation}` });
-    } else {
-        await Card.updateOne({ uuid }, { tappedIn: true, sourceStation });
-        res.status(200).json({ message: `Tapped in ${uuid} at ${sourceStation}` });
-    }
-});
-
-// cardRouter.put('/cards/tapOut', async (req, res) => {
-//     const { uuid, destinationStation } = req.body;
-//     if (uuid === undefined || destinationStation === undefined) {
-//         return res.status(400).json({ message: 'Please fill in all fields', uuid: `${uuid}`, destinationStation: `${destinationStation}` });
-//     } else {
-//         try {
-//             const card = await Card.findOne({ uuid });
-//             const fare = card.calculateFare(destinationStation);
-//             const balance = card.balance - fare;
-//             await Card.updateOne({ uuid }, { tappedIn: false, balance });
-//             res.status(200).json({ message: `Tapped out ${uuid} at ${destinationStation}. Fare: ${fare}` });
-//         } catch (err) {
-//             res.status(400).json({ message: `Error: ${err}` });
-//         }
-//     } 
-// });
 
 export default cardRouter;

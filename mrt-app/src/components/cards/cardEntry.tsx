@@ -2,12 +2,9 @@
 
 import React from 'react';
 import AddBalanceToCard from './addBalanceToCard';
+import CardData from './cardData';
 
-export interface CardProps {
-    uuid: string;
-    balance: number;
-    tappedIn: boolean;
-    sourceStation?: string;
+export interface CardProps extends CardData {
     handleDelete: (uuid: string) => void;
     handleRefresh: () => void;
 }

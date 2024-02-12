@@ -99,34 +99,7 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
             })
         );
     }
-
-    const test = () => {
-        return null
-        // return stations.map((station: StationData) =>
-        //     station.connectedStations?.map((connectedStationId: string) => {
-        //         const connectedStation = stations.find(
-        //             (s) => s._id === connectedStationId
-        //         );
-        //         console.log('connsta' + connectedStation)
-
-        //         if (connectedStation) {
-        //             const positions: LatLngExpression[] = [
-        //                 [station.coordinates[0], station.coordinates[1]],
-        //                 [
-        //                     connectedStation.coordinates[0],
-        //                     connectedStation.coordinates[1],
-        //                 ],
-        //             ];
-        //             return <Polyline color="black" positions={positions} />;
-        //         }
-        //         return null;
-        //     })
-        // )
-        
-    }
-
     
-
     return (
         <>
                 <TileLayer

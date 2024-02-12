@@ -3,6 +3,8 @@ export interface CardData {
     balance: number;
     tappedIn: boolean;
     sourceStation?: string;
+    sourceStationName?: string;
+    coordinates? : [number, number];
 };
 
 export default CardData;

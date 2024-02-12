@@ -11,10 +11,6 @@ export const StationModel = mongoose.model('mrt-3', StationSchema);
 
 export const Fare = mongoose.model('fares', FareSchema);
 
-function manageConnections() {
-     
-}
-
 fareRouter.put('/stations/setFare', async (req, res) => {
     const { fare } = req.body;
     

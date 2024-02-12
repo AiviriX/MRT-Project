@@ -41,8 +41,8 @@ export async function findShortestPath(startStationId: string, targetStationId: 
             }
 
             return {
-                // path,
-                // stationNames,
+                path,
+                stationNames,
                 coordinates
             };
         }
@@ -91,6 +91,45 @@ export const calculateTotalFare = async (coords: [number, number][] = [], farePe
 function degreesToRadians(degrees: number): number {
     return degrees * Math.PI / 180;
 }
+
+// Haversine formula to calculate distance between two points
+export const calculateDistance = (coords: [number, number][] = []): number => {
+    const earthRadiusKm = 6371; // Earth's radius in kilometers
+
+    let totalDistance = 0;
+    for (let i = 0; i < coords.length - 1; i++) {
+        const [lat1, lon1] = coords[i];
+        const [lat2, lon2] = coords[i + 1];
+
+        const dLat = degreesToRadians(lat2 - lat1);
+        const dLon = degreesToRadians(lon2 - lon1);
+
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        totalDistance += earthRadiusKm * c;
+    }
+
+    return totalDistance;
+}
+
+// export const calculateFare = async (coords: [number, number][] = [], farePerKm: number): Promise<number> => {
+//     let totalDistance = 0;
+//     for (let i = 0; i < coords.length - 1; i++) {
+//         const [lat1, lon1] = coords[i];
+//         const [lat2, lon2] = coords[i + 1];
+//         totalDistance += calculateDistance([lat1, lon1], [lat2, lon2]);
+//     }
+
+//     const fare = totalDistance * farePerKm;
+//     console.log(`Total distance: ${totalDistance} km`);
+//     return fare;
+// }
+
 
 
 export default findShortestPath;

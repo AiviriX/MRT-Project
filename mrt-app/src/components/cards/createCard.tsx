@@ -1,6 +1,8 @@
 //This component is used to create the card only.
 import { useState, useEffect } from 'react';
 
+import { API_URL } from '../..';
+
 const CreateCard = () => {
     const [uuid, setUUID] = useState(0);
     const [balance, setBalance] = useState(0);
@@ -25,7 +27,7 @@ const CreateCard = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/cards/add', {
+            const response = await fetch(`${API_URL}/cards/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
