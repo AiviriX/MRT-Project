@@ -196,6 +196,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                                     <div className="text-gray-900">Remaining Balance: {selectedCard.balance} </div>
                                     <div className="text-gray-900">Tapped In: {selectedCard.tappedIn.toString()} </div>
                                     <div className="text-gray-900">Station Source: {selectedCard.sourceStationName}</div>
+                                    <div className="text-gray-900">Coordinates: {selectedCard.coordinates?.join(' ')}</div>
                                 </div>
                             ) : (
                                 <div>

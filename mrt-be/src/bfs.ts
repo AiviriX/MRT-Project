@@ -113,7 +113,7 @@ export const calculateDistance = (coords: [number, number][] = []): number => {
 
         totalDistance += earthRadiusKm * c;
     }
-
+    totalDistance = Math.round(totalDistance);
     return totalDistance;
 }
 
