@@ -44,6 +44,17 @@ cardRouter.post('/cards/tap/in', async (req, res) => {
     }
 });
 
+cardRouter.get('/cards/findShortestPath/:source/:destination', async (req, res) => {
+    const sourceStation = req.params.source;
+    const destinationStation = req.params.destination;
+    if (sourceStation === undefined || destinationStation === undefined) {
+        return res.status(400).json({ message: 'Please fill in all fields', sourceStation: `${sourceStation}`, destinationStation: `${destinationStation}` });
+    } else {
+        const {path , stationNames , coordinates} = await findShortestPath(sourceStation, destinationStation);
+        res.status(200).json({path, stationNames, coordinates});
+    }
+});
+
 cardRouter.post('/cards/tap/out', async (req, res) => {
     const { cardData, stationData } = req.body;
     if (cardData === undefined || stationData === undefined) {
@@ -70,34 +81,36 @@ cardRouter.post('/cards/tap/out', async (req, res) => {
                     console.log('total' + totalFare);
                 }
             }
-            const newBalance = (card.balance ?? 0) - totalFare;
+            const newBalance = (card.balance ?? 0) - Math.round(totalFare);
             console.log('oldbalan' + card.balance)
             console.log('newbalan' + newBalance);
 
             if (newBalance < 0) {
                 return res.status(403).json({ message: `Insufficient balance for card ${cardData.uuid}` });
             } else {
-                await Card.updateOne({ uuid: cardData.uuid }, { tappedIn: false, sourceStation: '', balance: newBalance });  
+                await Card.updateOne({ uuid: cardData.uuid }, { tappedIn: false, sourceStation: '', sourceStationName:'', balance: newBalance });  
             }
         } else {
-            return res.status(403).json({ message: `Card ${cardData.uuid} is already tapped out` });
+            return res.status(400).json({ message: `Card ${cardData.uuid} is already tapped out` });
         }
         res.status(201).json({ message: `Tapped out ${cardData.uuid} at ${stationData.stationName} with path ${path}` });
     }
 }
 );
 
-cardRouter.get('/calculateFare', async (req, res) => {
+cardRouter.post('/cards/calculateFare', async (req, res) => {
     const { coords } = req.body;
     const farePerKm = await Fare.find({});
+    const totalDistance = await calculateDistance(coords);
+    console.log(farePerKm[0].farePerKm ?? 0)
 
     const fare = await calculateTotalFare(coords, farePerKm[0].farePerKm ?? 0);
 
-    res.status(200).json({fare});
+    res.status(200).json({fare, totalDistance});
 }
 );
 
-cardRouter.get('/calculateTotalDistance', async (req, res) => {
+cardRouter.post('/cards/calculateTotalDistance', async (req, res) => {
     const {coords} = req.body;
     const distance = await calculateDistance(coords);
 

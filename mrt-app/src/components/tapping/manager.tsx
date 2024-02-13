@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer } from "react-leaflet"
+import { MapContainer, Marker, TileLayer } from "react-leaflet"
 import Select from "react-select"
 import { useState, useEffect } from "react"
 import Modal from 'react-modal'
@@ -14,6 +14,8 @@ import { updateCard } from "../cards/manager";
 
 import { API_URL } from "../.."
 import calculateDistance from "../distanceCalculator";
+import path from "path";
+import { LatLngExpression } from "leaflet";
 
 interface TappingManagerProps {
     cardProp?: CardData
@@ -30,20 +32,64 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
     const [tapModalAction, setTapModalAction] = useState('');
     const [tapInOpen, setTapInOpen] = useState(false);
     const [tapOutOpen, setTapOutOpen] = useState(false);
-    const [totalDistance, setTotalDistance] = useState(0);
+    const [pathNames, setPathNames] = useState([])
+    const [pathCoords, setPathCoords] = useState([])
+    const [totalDistance, setTotalDistance] = useState(0)
+    const mismatchFee = 50
 
     //When marker is clicked, set it as the selected station
     const handleMarkerClick = (marker: StationData) => {
         setSelectedStation(marker);
+        if (selectedCard && selectedStation){
+            findPathRequester(selectedCard, selectedStation);
+        }
+    }
+
+    const findPathRequester = async (cardData: CardData, stationData: StationData) => {
+        const result = await findPathRequest(cardData, stationData);  
+        const resultCoords = await findPathCoordsRequest(cardData, stationData); 
+        const resultDistance = await findDistanceRequest(resultCoords);     
+
+        console.log('result', resultDistance)
+
+        setPathNames([])
+        setPathNames(result);
+        setPathCoords(resultCoords);
+        setTotalDistance(resultDistance);
+
+        const resultFare = await getFareRequest(resultCoords);
+        setFare(Math.round(resultFare));
+    }
+
+    const findDistanceRequest = async (coords: [number, number]) => {
+        try {
+            const response = await fetch(`${API_URL}/cards/calculateTotalDistance`, 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({coords: coords})
+                }
+            );
+            const data = await response.json();
+            return data.distance;
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const searchForCardStation = async (param: string) => {     
         if (param) {
             const cardData = await getCard(param)
             setSelectedCard(cardData)
-            if (cardData.sourceStation) {
-                const stationData = await getStation(cardData.sourceStation);
-                setSelectedCardThing(stationData);
+            try {
+                if (cardData.sourceStation) {
+                    // const stationData = await getStation(cardData.sourceStation);
+                    // setSelectedCardThing(stationData);
+                }
+            } catch (error) {
+                
             }
         }
     }
@@ -85,20 +131,26 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
             setTapOutOpen(true);
     }
 
+    const calculateBeforeTapOut = async (cardData: CardData, stationData: StationData) => {
+        const distance = findPathRequest(cardData, stationData);
+        
+    }
+
+    //This function is called to display the station information when a marker is clicked.
     useEffect(() => {
         if (selectedCard) {
             updateCardList(selectedCard);
         }
-    }, [selectedCard])
 
-
-    //This function is called to display the station information when a marker is clicked.
-    useEffect(() => {
         if (selectedStation) {
             updateStationList(selectedStation);
         }
+
+        if (selectedCard && selectedStation){
+            findPathRequester(selectedCard, selectedStation);
+        }
     }
-    , [selectedStation])
+    , [selectedStation, selectedCard], )
 
     //
     useEffect(() => {
@@ -120,6 +172,10 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                     type="number"
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
+                            searchForCardStation(e.currentTarget.value)
+                        }
+
+                        if (e) {
                             searchForCardStation(e.currentTarget.value)
                         }
                     }}
@@ -205,36 +261,54 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                 isOpen={tapInOpen}
                 style={{
                     content: {
-                        width: '500px', // Set the width of the modal
+                        width: 'auto', // Set the width of the modal
                         height: 'auto', // Set the height of the modal
                         margin: 'auto'
                     },
                 }}
             >
-                <div className="flex flex-col space-y-4">
-                    <h1 className="text-2xl font-bold">Are you sure to tap in?</h1>
-                        <div>Card ID: {selectedCard.uuid} </div>
-                        <div>Card Balance: {selectedCard.balance}</div>
-                        <div>Base Fare:</div>
-                    <div className='border-2 rounded '></div>
-                        <div>From:</div>
-                        {/* <div>Station ID: {selectedStation._id}</div> */}
-                        <div>Station Name: {selectedStation.stationName}</div>
-                    <div className="text-xs italic">Note: Source station will be registered in the card for fare calculation.</div>
-                    <div className="text-xs italic">Misuse of card tapping may incur an entry mismatch fee</div>
-                    <button
-                        onClick={()=>handleTapIn(selectedCard, selectedStation)} //tap logic here
-                        className="p-2 bg-green-500 text-white rounded w-full"
-                    >
-                        Submit
-                    </button>
-                    <button
-                        onClick={()=>setTapInOpen(false)} //close modal
-                        className="p-2 bg-red-500 text-white rounded w-full"
-                    >
-                        Close
-                    </button>
+                <div className="flex flex-row ">
+                    <div className="flex flex-col space-y-4">
+                        <h1 className="text-2xl font-bold">Are you sure to tap in?</h1>
+                            <div>Card ID: {selectedCard.uuid} </div>
+                            <div>Card Balance: {selectedCard.balance}</div>
+                            <div>Base Fare:</div>
+                        <div className='border-2 rounded '></div>
+                            <div>From:</div>
+                            {/* <div>Station ID: {selectedStation._id}</div> */}
+                            <div>Station Name: {selectedStation.stationName}</div>
+                        <div className="text-xs italic">Note: Source station will be registered in the card for fare calculation.</div>
+                        <div className="text-xs italic">Misuse of card tapping may incur an entry mismatch fee</div>
+                        <button
+                            onClick={()=>handleTapIn(selectedCard, selectedStation)} //tap logic here
+                            className="p-2 bg-green-500 text-white rounded w-full"
+                        >
+                            Submit
+                        </button>
+                        <button
+                            onClick={()=>setTapInOpen(false)} //close modal
+                            className="p-2 bg-red-500 text-white rounded w-full"
+                        >
+                            Close
+                        </button>
+                    </div>
+
+                    <MapContainer center={selectedStation.coordinates as LatLngExpression} zoom={15} scrollWheelZoom={false} dragging={false}
+                            className='flex box-border w-1/2 h-1/2 maxw-32 maxh-32 border-4 pos-center z-0'>
+                        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
+                        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                            crossOrigin="">
+                        </script>
+                        <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <Marker position={selectedStation.coordinates as LatLngExpression}/>
+                    </MapContainer>
                 </div>
+                
+
             </Modal>
         }
 
@@ -244,43 +318,70 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                 isOpen={tapOutOpen}
                 style={{
                     content: {
-                        width: '500px', // Set the width of the modal
+                        width: 'auto', // Set the width of the modal
                         height: 'auto', // Set the height of the modal
                         margin: 'auto'
                     },
                 }}
                 >
-                <div className="flex flex-col space-y-4">
-                    <h1 className="text-2xl font-bold">Are you sure you want to tap out?</h1>
-                    <div>Card ID: {selectedCard.uuid} </div>
-                    <div>Card Balance: {selectedCard.balance}</div>
-                    <div>Tapped in at: {selectedCard.sourceStationName} </div>
-                    <div>Coordinates: </div>
-                    <div>{selectedCard.coordinates?.[0]}</div>
-                    <div>{selectedCard.coordinates?.[1]}</div>
-                    <div className='border-2 rounded '></div>
-                    <div>Tapping out at: {selectedStation.stationName}</div>
-                    <div>Coordinates: {selectedStation.coordinates} </div>
-                    <div>Total Distance: 
-                        { } 
-                     </div>
-                    <div>Fare Price: {  } </div>
-                    <div>Balance Remaining:{ }</div>
-                    {/* <div className="text-xs italic">Note: Destination station will be registered in the card for fare calculation.</div>
-                    <div className="text-xs italic">Misuse of card tapping may incur an entry mismatch fee</div> */}
-                    <button
-                        onClick={()=>handleTapOut(selectedCard, selectedStation)} //tap out logic here
-                        className="p-2 bg-green-500 text-white rounded w-full"
-                    >
-                        Submit
-                    </button>
-                    <button
-                        onClick={()=>setTapOutOpen(false)} //close modal
-                        className="p-2 bg-red-500 text-white rounded w-full"
-                    >
-                        Close
-                    </button>
-                </div>
+                <>  
+                    <div className="flex flex-row spacex-2">
+                        <div className="flex flex-col space-y-4 w-1/2">
+                            <h1 className="text-2xl font-bold">Are you sure you want to tap out?</h1>
+                            <div>Card ID: {selectedCard.uuid} </div>
+                            <div>Card Balance: {selectedCard.balance}</div>
+                            <div>Tapped in at: {selectedCard.sourceStationName} </div>
+                            <div>Coordinates: </div>
+                                <div>{selectedCard.coordinates?.[0]}</div>
+                                <div>{selectedCard.coordinates?.[1]}</div>
+                            <div className='border-2 rounded '></div>
+                            <div>Tapping out at: {selectedStation.stationName}</div>
+                            <div>Coordinates: {selectedStation.coordinates.join(' ')} </div>
+                            <div>Path: { pathNames.join("->")  }</div>
+                            <div>Total Distance: { totalDistance } km</div>                            
+                            { selectedCard.sourceStation === selectedStation._id ?
+                                <>
+                                    <div>Entry Mismatch Fee {mismatchFee} </div>
+                                    <div>Balance after tapping out : { selectedCard.balance - mismatchFee }</div>
+                                </>
+                                :
+                                <>
+                                    <div>Fare {fare} </div> 
+                                    <div>Balance after tapping out: { selectedCard.balance - fare < 0 ? 'Insufficient Balance' : selectedCard.balance - fare }</div>
+                                </>
+                            }
+
+                            {/* <div className="text-xs italic">Note: Destination station will be registered in the card for fare calculation.</div>
+                            <div className="text-xs italic">Misuse of card tapping may incur an entry mismatch fee</div> */}
+                            <button
+                                onClick={()=>handleTapOut(selectedCard, selectedStation)} //tap out logic here
+                                className="p-2 bg-green-500 text-white rounded w-full"
+                            >
+                                Submit
+                            </button>
+                            <button
+                                onClick={()=>setTapOutOpen(false)} //close modal
+                                className="p-2 bg-red-500 text-white rounded w-full"
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <MapContainer center={selectedStation.coordinates as LatLngExpression} zoom={12} scrollWheelZoom={false} dragging={false}
+                                className='flex box-border w-full h-1/2 maxw-32 maxh-32 border-4 pos-center z-0'>
+                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
+                            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                                crossOrigin="">
+                            </script>
+                            <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            { selectedCard.coordinates ? <Marker position={selectedCard.coordinates as LatLngExpression}/> : null }
+                            <Marker position={selectedStation.coordinates as LatLngExpression}/>
+                        </MapContainer>
+                    </div>
+                </>
             </Modal>
         }
         </section>
@@ -288,3 +389,44 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
     </>
   )
 }
+
+const findPathRequest = async (cardData: CardData, stationData: StationData) => {
+    try {
+        const response = await fetch(`${API_URL}/cards/findShortestPath/${cardData.sourceStation}/${stationData._id}`);
+        const data = await response.json();
+        console.log('eep!', data.stationNames );
+        return data.stationNames;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const findPathCoordsRequest = async (cardData: CardData, stationData: StationData) => {
+    try {
+        const response = await fetch(`${API_URL}/cards/findShortestPath/${cardData.sourceStation}/${stationData._id}`);
+        const data = await response.json();
+        return data.coordinates;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const getFareRequest = async (pathCoords: [number, number]) => {
+    try {
+        const response = await fetch(`${API_URL}/cards/calculateFare`, 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({coords: pathCoords})
+            }
+        );
+        const data = await response.json();
+        console.log( data );
+        return data.fare;
+    } catch (error) {
+        console.error(error);
+    }
+}
+

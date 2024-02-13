@@ -65,7 +65,7 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
                 setLat(e.latlng.lat);
                 setLng(e.latlng.lng);
                 console.log('coords', lat, lng)
-                console.log(`Map clicked at coordinates: ${e.latlng.lat}, ${e.latlng.lng}`)
+                
                 setMarkerPosition(e.latlng);   
             },
         });

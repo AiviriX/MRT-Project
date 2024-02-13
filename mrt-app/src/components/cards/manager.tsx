@@ -165,9 +165,14 @@ export const tapInCard = async (cardData: CardData, stationData: StationData) =>
         const data = await response.json();
         if (response.ok){
             alert('Card Updated Successfully')
+        } 
+
+        if (response.status === 403){
+            alert('Card is already tapped in. Mismatch fee may occur.')
         }
     } catch (error) {
         console.error(error);
+
     }
 }
 
@@ -185,7 +190,16 @@ export const tapOutCard = async (cardData: CardData, stationData: StationData) =
 
         if (response.ok){
             console.log(data)
+            alert('Card Tap Out Successful')
+        } 
+
+        if (response.status === 403){
+            alert('You have insufficient balance to tap out. Please add balance to your card at the booth')
         }
+
+        // if (response.status === 400){
+        //     alert('Card is not tapped in. Please tap in at the booth')
+        // }
     } catch (error) {
         console.error(error);
     }
