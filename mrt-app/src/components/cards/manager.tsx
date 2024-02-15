@@ -11,62 +11,46 @@ import { hasSessionToken } from '../../auth/sessionTokenManager';
 import { CardData } from './cardData';
 import { API_URL } from '../..';
 import StationData from '../stations/stationData';
+import { useMediaQuery } from '@uidotdev/usehooks';
 
 
 export const CardManager = () => {
     const [cards, setCards] = useState<CardData[]>([]);
     const [cardAction, setCardAction] = useState('');
-    const [searchQuery, setSearchQuery] = useState(''); //Search Query for the cards.
-
-    //Token Hooks :(
-    const [hasToken, setToken] = useState(hasSessionToken());
-
-    //Handle Reload when updating datas
     const [reload, triggerReload] = useState(false);
-
     const navigate = useNavigate();
+
+    const hasToken = hasSessionToken();
+    const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
     const handleDelete = async (uuid: string) => {
         if (window.confirm('Are you sure you want to delete this card?')) {
             await deleteCard(uuid);
-            triggerReload(!reload); //Triggers reload everytime this is toggled.
-          }
+            triggerReload(!reload);
+        }
     };
 
     const refreshCardListFromChild = () => {
         triggerReload(!reload);
-    }
+    };
 
-    //Refreshes the list of cards.
     useEffect(() => {
         const refreshCard = async () => {
             try {
                 const fetchedCards = await getCardList();
                 setCards(fetchedCards);
-
-            } catch (error) {   
+            } catch (error) {
                 console.error(error);
             }
-            // console.log(cards[2])
-        }
-        // let x = GetCardList();
-        // x.then((data) => {
-        //     setCards(data);
-        // });
-        refreshCard()
-        // console.log(cards)
-
+        };
+        refreshCard();
     }, [cardAction, reload]);
-
-
 
     return (
         <>
-         {
-            hasToken ? (
-                
-                <div className="flex h-screen overflow-hidden">
-                    <aside className="w-64 h-auto bg-gray-800 text-white p-6 space-y-6">
+            {hasToken ? (
+                <div className="flex flex-col md:flex-row h-screen overflow-hidden">
+                    <aside className={`md:w-64 h-auto bg-gray-800 text-white p-6 space-y-6 ${isSmallScreen ? 'md:hidden' : 'md:block'}`}>
                         <h1 className="text-xl font-bold">Card Management</h1>
                         <button
                             onClick={() => setCardAction('create')}
@@ -78,38 +62,35 @@ export const CardManager = () => {
                             className="w-full bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                             List UUIDs
                         </button>
-                    </aside>    
+                    </aside>
 
                     <main className="flex-grow px-3 overflow-auto h-screen">
-                        {   
-                                cardAction === 'create' ? <CreateCard/> :
-
-                                    cards ? cards.map((card) => {
-                                        return (
-                                            <CardEntry
-                                                uuid={card.uuid}
-                                                balance={card.balance}
-                                                tappedIn={card.tappedIn}
-                                                sourceStation={card.sourceStation}
-                                                sourceStationName={card.sourceStationName}
-                                                handleDelete={handleDelete}
-                                                handleRefresh={refreshCardListFromChild}
-                                            />
-                                        )
-                                    }) : (<h1> No Cards Found </h1>)
-
-                            }
-
+                        {cardAction === 'create' ? (
+                            <CreateCard />
+                        ) : cards.length > 0 ? (
+                            cards.map((card) => (
+                                <CardEntry
+                                    key={card.uuid}
+                                    uuid={card.uuid}
+                                    balance={card.balance}
+                                    tappedIn={card.tappedIn}
+                                    sourceStation={card.sourceStation}
+                                    sourceStationName={card.sourceStationName}
+                                    handleDelete={handleDelete}
+                                    handleRefresh={refreshCardListFromChild}
+                                />
+                            ))
+                        ) : (
+                            <h1>No Cards Found</h1>
+                        )}
                     </main>
                 </div>
             ) : (
                 navigate('/noaccess')
-            )
-         }
-            {/* Ref: http://localhost:3000/cards/manage/edit-card?152782488772 */}
+            )}
         </>
-    )
-}
+    );
+};
 
 //FETCH REQUESTS
 //Handles the deletion of cards/
