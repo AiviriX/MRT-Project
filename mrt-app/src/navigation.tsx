@@ -1,23 +1,23 @@
 import './style/mrt_index.css'
 import './style/nav.css'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { removeSessionToken, hasSessionToken } from './auth/sessionTokenManager'
 
 export const Navigation = () => {
     const [hasToken, setToken] = useState(hasSessionToken())
-    const [showDropdown, setShowDropdown] = useState(false);
-
-    const toggleDropdown = () => {
-        setShowDropdown(!showDropdown);
-    };
 
     //Handles the instructions to remove the session token locally....
     const locRemoveSessionToken = () => {
         removeSessionToken();
         setToken(hasSessionToken());
     }
+
+    useEffect(() => {
+        // Update hasToken state when the session token changes
+        setToken(hasSessionToken());
+    }, []);
 
     return (   
         <nav className="bg-gray-200 shadow shadow-gray-300 w-full px-8 md:px-auto">
@@ -41,7 +41,7 @@ export const Navigation = () => {
                                 </>
                             ) : <></>
                         }
-                        <li className="md:px-4 md:py-2 hover:text-indigo-400"><a href="#">Contact</a></li>
+                        {/* <li className="md:px-4 md:py-2 hover:text-indigo-400"><a href="#">Contact</a></li> */}
                     </ul>
                 </div>
                 <div className="order-2 md:order-3">
@@ -51,9 +51,14 @@ export const Navigation = () => {
                         </svg>
                         {
                             hasToken ? (
-                                <span> Logout </span>
+                                <span onClick={locRemoveSessionToken}> Logout </span>
                             ) : (
-                                <span> Login </span>
+                                <Link to="/login/admin">
+                                    <span> Login </span>
+                                    {
+                                        
+                                    }
+                                </Link>
                             )
                         }
                     </button>
