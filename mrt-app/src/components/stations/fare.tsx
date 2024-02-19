@@ -46,7 +46,7 @@ const Fare: React.FC = () => {
 
   return (
     <>
-    <div className='flex flex-col h-screen overflow-hidden'>   
+    <div className='flex flex-col h-screen overflow-hidden items-center p-10'>   
       <h1 className='text-2xl font-bold mb-4'>Update fare per KM </h1>
       <h1 className='text-2xl font-bold mb-4'>Current Fare: {fare} </h1>
       <input className='border-2 border-gray-300 p-2 w-full mb-4 rounded-md' type="number" onChange={handleFareChange} />
