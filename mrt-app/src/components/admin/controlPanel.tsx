@@ -39,7 +39,7 @@ const AdminControl = () => {
                 <div className="relative">
                     {/* Sidebar menu */}
                     <aside
-                        className={`absolute top-0 left-0 border-blue border-solid border-2 ${
+                        className={`absolute top-0 left-0 border-blue border-solid border-2 z-49 ${
                             (isLargeScreen || showSidebar) ? 'translate-x-0' : '-translate-x-full'
                         } md:translate-x-0 transform transition-transform duration-300 md:transform-none flex flex-col w-64 h-screen bg-gray-800 text-white p-6 space-y-6`}
                     >
@@ -98,7 +98,7 @@ const AdminControl = () => {
                     {/* Hamburger menu */}
                     <button
                         onClick={handleToggleSidebar}
-                        className="fixed bottom-4 left-4 z-50 text-white bg-blue-200 rounded-full focus:outline-none p-2 md:hidden"
+                        className="fixed bottom-4 left-4 z-50 text-white bg-black rounded-full focus:outline-none p-2 md:hidden md:z-50"
                     >
                         <svg
                             className="w-8 h-8"

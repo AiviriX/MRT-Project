@@ -22,8 +22,6 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
     const [marker, setMarker] = useState({} as StationData);
     const [markerPosition, setMarkerPosition] = useState<LatLng | [0,0]>();
     const [createStationMapClick, setCreateStationMapClick] = useState(false);
-    const [polylinePositions, setPolylinePositions] = useState(stations.map(() => ([0,0])));
-    const [connected, setConnected] = useState([]);
 
     //Calls the function component createStation modal
     const invokeCreateStation = () => {
@@ -77,9 +75,9 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
             const data = await getStationList(trainLine);
             console.log('data', data);
             setStations(data);
-            data.map((station: StationData) => {
-                console.log('station', station.stationName, station.connectedStation);
-            })
+            // data.map((station: StationData) => {
+            //     console.log('station', station.stationName, station.connectedStation);
+            // })
         } 
         fetchStations();
     }, []);
@@ -102,40 +100,41 @@ const MRT3Stations: React.FC<RetrieveMarker> = ({setSelectedMarker}) => {
     
     return (
         <>
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <MapEvents/>
-                {putMarker()}
-                {createStationMapClick ? invokeCreateStation() : null}
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                className="z-1"
+            />
+            <MapEvents/>
+            {putMarker()}
+            {createStationMapClick ? invokeCreateStation() : null}
 
-                {
-                    stations && stations.map((station) => (
-                        <>
-                            <Marker 
-                                key={station.stationName}
-                                position={[station.coordinates[0], station.coordinates[1]]}
-                                eventHandlers={{
-                                    click: () => {
-                                        setMarker(station)
-                                        setSelectedMarker && setSelectedMarker(station);                         
-                                        console.log('Marker clicked', station.stationName, station.coordinates)
-                                    }
-                                }}
-                            >
-                                <Popup>
-                                    {station.stationName}
-                                </Popup>
-                            </Marker>
-                            {getpolyLines()}
-                            {station.connectedStation?.map((connectedStationId: string) => {
-                                // console.log('Connected station ID:', connectedStationId);
-                                return null;
-                            })}
-                        </>
-                    ))
-                }
+            {
+                stations && stations.map((station) => (
+                    <>
+                        <Marker 
+                            key={station.stationName}
+                            position={[station.coordinates[0], station.coordinates[1]]}
+                            eventHandlers={{
+                                click: () => {
+                                    setMarker(station)
+                                    setSelectedMarker && setSelectedMarker(station);                         
+                                    console.log('Marker clicked', station.stationName, station.coordinates)
+                                }
+                            }}
+                        >
+                            <Popup>
+                                {station.stationName}
+                            </Popup>
+                        </Marker>
+                        {getpolyLines()}
+                        {station.connectedStation?.map((connectedStationId: string) => {
+                            // console.log('Connected station ID:', connectedStationId);
+                            return null;
+                        })}
+                    </>
+                ))
+            }
         </>
     );
 
@@ -174,6 +173,7 @@ export const MRT3StationsExport: React.FC<RetrieveMarker> = ({ setSelectedMarker
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                className="z-0"
             />
             {stations.map((station) => (
                 <>

@@ -15,9 +15,7 @@ const Stations = () => {
 
     const [searchUUID, setSearchUUID] = useState('');
     const [searchCardEntry, setSearchCardEntry] = useState<CardData | null | undefined>();
-    const [selectedStation, setSelectedStation] = useState();
     const [stations, setStations] = useState(<Component/>);
-    const [clickedPosition, setClickedPosition] = useState<[number, number] | null>(null);
 
     useEffect(() => {
         if (selectedLine === 'MRT-3') {

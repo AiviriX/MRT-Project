@@ -1,8 +1,3 @@
-//StationModal.tsx
-//This file contains the component for the StationModal.
-//This component is used to create and update stations.
-//The component is used in the MRT3Stations component.
-
 import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { MapContainer, useMapEvents, TileLayer, Marker } from 'react-leaflet';
@@ -12,6 +7,8 @@ import { fetchStationData, getConnectedStations, getStationList } from '../manag
 import { API_URL } from '../../..';
 import { StationData } from '../stationData';
 import calculateDistance from '../../distanceCalculator';
+
+
 
 interface StationProps {
     isOpen: boolean;
@@ -167,10 +164,9 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
         <Modal 
             isOpen={isOpen} 
             onRequestClose={onRequestClose}
-            className="flex items-center justify-center p-4 z-50"
         >
-            <div className='flex flex-row space-y-4 bg-white rounded-lg p-6 shadow-lg'>
-                <section className='flex flex-col space-y-4 mr-4'>
+            <div className='flex flex-col lg:flex-row space-y-4 bg-white rounded-lg p-6 shadow-lg w-full'>
+                <section className='flex flex-col space-y-4 lg:mr-8 lg:w-1/2'>
                     <h1 className='text-2xl font-bold'>{mode === 'create' ? 'Create Station' : 'Update Station'}</h1>
                     <label className='text-lg'>Station Name</label>
                     <input 
@@ -182,7 +178,7 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
                     />
 
                     <label className='text-lg'>Coordinates (Lat. Long.)</label>
-                    <div className='flex flex-row space-x-2'>
+                    <div className='flex flex-col md:flex-row space-x-2'>
                         <input 
                             className='mt-2 p-2 border rounded w-full'
                             placeholder="Latitude"
@@ -232,21 +228,22 @@ const StationModal: React.FC<StationProps> = ({ isOpen, onRequestClose, mode, st
                         Close 
                     </button>               
                 </section>
-
-                <MapContainer 
-                    center={[14.60773659867783, 121.0266874139731]} 
-                    zoom={12} 
-                    scrollWheelZoom={true}
-                    className='flex-grow box-border w-full h-full maxw-32 maxh-32 border-4 pos-center z-0'
-                >
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <Marker position={[lat, long]} />
-                    <MapEvents/>
-                </MapContainer>
-            </div>
+                <div className="m-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-white-800 dark:border-gray-700 relative z-0 h-[625px] w-[100%] lg:w-[50%]">
+                        <MapContainer 
+                            center={[14.60773659867783, 121.0266874139731]} 
+                            zoom={12} 
+                            scrollWheelZoom={true}
+                            style={{ height: "100%", width: "100%" }}
+                        >
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <Marker position={[lat, long]} />
+                            <MapEvents/>
+                        </MapContainer>
+                    </div>
+                </div>
         </Modal>
     );
 }

@@ -24,17 +24,16 @@ interface TappingManagerProps {
 
 export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, stationProp}) => {
     const [selectedCard, setSelectedCard] = useState<CardData>()
-    const [selectedCardThing, setSelectedCardThing] = useState<StationData>()
     const [allCards, setAllCards] = useState<CardData[]>([])
     const [selectedStation, setSelectedStation] = useState<StationData>()
     const [allStations, setAllStations] = useState<StationData[]>([])
     const [fare, setFare] = useState(0);
-    const [tapModalAction, setTapModalAction] = useState('');
     const [tapInOpen, setTapInOpen] = useState(false);
     const [tapOutOpen, setTapOutOpen] = useState(false);
     const [pathNames, setPathNames] = useState([])
     const [pathCoords, setPathCoords] = useState([])
     const [totalDistance, setTotalDistance] = useState(0)
+    const [cardSearch, setCardSearch] = useState('')
     const mismatchFee = 50
 
     //When marker is clicked, set it as the selected station
@@ -161,34 +160,39 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
         fetchStations();
     }, []);
     
+    useEffect(() => {
+        console.log('selectedCard', selectedCard)
+    }, [selectedCard])
+
+    const checkIfStationAndCardAvailable = () => {
+        if (selectedCard && selectedStation){
+            return true;
+        }
+        alert('Please select a card and a station')
+        return false;
+    }
+
+
   return (
     <>
-    <div className="flex flex-row">
-        <section className="flex flex-col">
-            <div className="relative">
-                <input
-                    className="w-full border border-gray-200 rounded-lg p-4 text-sm font-medium"
-                    placeholder="Search Card"
-                    type="number"
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            searchForCardStation(e.currentTarget.value)
-                        }
-
-                        if (e) {
-                            searchForCardStation(e.currentTarget.value)
-                        }
-                    }}
-                />
-                    <div className="absolute inset-y-0 right-4 flex items-center">
-                </div>
-            </div>
-            <div className="grid items-center gap-4 max-w-sm mx-auto">
-                <div className="border border-gray-200 rounded-lg p-4">
-                    <search className="text-sm font-medium">Card Information</search>
-                    
-                    {/* Get Card information here */}
-                    <div className="flex items-center justify-between space-x-4 text-sm font-medium">
+    <div className="flex flex-col w-full">
+        <div className="flex flex-row">
+            <div className="flex flex-col space-y-6 lg:flex-row lg:space-x-6 ">
+                <div className="border-2 border-black rounded-lg ">
+                    <p className="py-2 px-2 w-full text-sm font-medium">Card Information</p>
+                    <div className="flex flex-col mx-2">
+                    <div className="flex flex-col items-center justify-between  text-sm font-medium border-2 border-black ">
+                        <input
+                            className="border border-gray-200 rounded-lg p-4 text-sm font-medium w-full "
+                            placeholder="Search Card"
+                            type="number"
+                            onChange={(e) => setCardSearch(e.target.value)} 
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    searchForCardStation(e.currentTarget.value)
+                                }
+                            }}
+                        />
                         {
                             selectedCard ? (
                                 <div>
@@ -205,46 +209,65 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                             )
                         }
                     </div>
-                    <div className="border-t my-4" />
+                    <div className="space-y-2 space-x-2">
+                        <button className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => checkIfStationAndCardAvailable() ? setTapInOpen(true) : null}
+                        >
+                            Tap IN
+                        </button>
+                        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => checkIfStationAndCardAvailable() ? setTapOutOpen(true) : null}
+                        >
+                            Tap OUT
+                        </button>
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => {
+                                    try {
+                                        searchForCardStation(cardSearch);
+                                    } catch (error) {
+                                    }
 
-            </div>
-            <div className="border border-gray-200 rounded-lg p-4 mt-4">
-                <Select/>
-                {
-                    selectedStation ? (
-                        <div>
-                            <div className="text-sm font-medium">Station Information</div>
-                            <div> Station Name: {selectedStation.stationName} </div>
-                            <div> Coordinates: {selectedStation.coordinates[0]}, {selectedStation.coordinates[1]} </div>
-                            {/* <div> Connected Stations: {selectedStation.connectedStation} </div> */}
-                        </div>
-
-                    ) : (
-                        <div>
-                            <div className="text-sm font-medium">Station Information</div>
-                            <div className="text-gray-500">Station Name: No station selected</div>
-                        </div>
-                    )
-                }
-            </div>
-            <div className="space-y-2">
-                    <button className="mx-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => setTapInOpen(true)}
-                    >
-                        Tap IN
-                    </button>
-                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => setTapOutOpen(true)}
-                    >
-                        Tap OUT
-                    </button>
+                                }}
+                        >
+                            Search Card
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </section>
+                    <div className="border-t my-4" />
+                </div>
+                <div className="border-2 border-black rounded-lg ">
+                    <div className="p-2">
+                        <Select/>
+                        {
+                            selectedStation ? (
+                                <div>
+                                    <div className="text-sm font-medium">Station Information</div>
+                                    <div> Station Name: {selectedStation.stationName} </div>
+                                    <div> Coordinates: {selectedStation.coordinates[0]}, {selectedStation.coordinates[1]} </div>
+                                    {/* <div> Connected Stations: {selectedStation.connectedStation} </div> */}
+                                </div>
+
+                            ) : (
+                                <div>
+                                    <div className="text-sm font-medium">Station Information</div>
+                                    <div className="text-gray-500">Station Name: No station selected. Click a marker!</div>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+            </div>            
+            
+        </div>
+                
         <section>
-            <div className="w-full h-full border-2 rounded">
-            <MapContainer center={[14.60773659867783, 121.0266874139731]} zoom={12} scrollWheelZoom={true}
-                className='flex box-border w-auto h-automaxw-32 maxh-32 border-4 pos-center z-0'>
+        <div className="m-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-white-800 dark:border-gray-700 relative z-0 h-[625px] w-[screen] lg:w-[90%]">
+            <MapContainer 
+                center={[14.60773659867783, 121.0266874139731]} 
+                zoom={12} 
+                scrollWheelZoom={true}
+                style={{ height: "100%", width: "100%" }}
+            >
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
                     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -254,9 +277,11 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
             </MapContainer>
             </div>
         </section>
-        <section className="mt-10">
-            
+
+
+        <section className="mt-10">    
         {
+
             tapInOpen && selectedCard && selectedStation &&
             <Modal
                 isOpen={tapInOpen}
@@ -268,7 +293,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                     },
                 }}
             >
-                <div className="flex flex-row ">
+                <div className="flex flex-col lg:flex-row ">
                     <div className="flex flex-col space-y-4">
                         <h1 className="text-2xl font-bold">Are you sure to tap in?</h1>
                             <div>Card ID: {selectedCard.uuid} </div>
@@ -293,23 +318,22 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                             Close
                         </button>
                     </div>
-
-                    <MapContainer center={selectedStation.coordinates as LatLngExpression} zoom={15} scrollWheelZoom={false} dragging={false}
-                            className='flex box-border w-1/2 h-1/2 maxw-32 maxh-32 border-4 pos-center z-0'>
-                        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
-                        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                            crossOrigin="">
-                        </script>
-                        <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <Marker position={selectedStation.coordinates as LatLngExpression}/>
-                    </MapContainer>
+                    <div className="m-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-white-800 dark:border-gray-700 relative z-0 h-[625px] w-[100%] lg:w-[100%]">
+                        <MapContainer center={selectedStation.coordinates as LatLngExpression} zoom={15} scrollWheelZoom={false} dragging={false}
+                               style={{ height: "100%", width: "100%" }}>
+                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
+                            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                                crossOrigin="">
+                            </script>
+                            <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <Marker position={selectedStation.coordinates as LatLngExpression}/>
+                        </MapContainer>
+                    </div>
                 </div>
-                
-
             </Modal>
         }
 
@@ -326,8 +350,8 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                 }}
                 >
                 <>  
-                    <div className="flex flex-row spacex-2">
-                        <div className="flex flex-col space-y-4 w-1/2">
+                    <div className="flex flex-col lg:flex-row spacex-2">
+                        <div className="flex flex-col space-y-4 w-full">
                             <h1 className="text-2xl font-bold">Are you sure you want to tap out?</h1>
                             <div>Card ID: {selectedCard.uuid} </div>
                             <div>Card Balance: {selectedCard.balance}</div>
@@ -367,26 +391,30 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                                 Close
                             </button>
                         </div>
-                        <MapContainer center={selectedStation.coordinates as LatLngExpression} zoom={12} scrollWheelZoom={false} dragging={false}
-                                className='flex box-border w-full h-1/2 maxw-32 maxh-32 border-4 pos-center z-0'>
-                            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
-                            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                                crossOrigin="">
-                            </script>
-                            <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            { selectedCard.coordinates ? <Marker position={selectedCard.coordinates as LatLngExpression}/> : null }
-                            <Marker position={selectedStation.coordinates as LatLngExpression}/>
-                        </MapContainer>
+                        <div className="m-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-white-800 dark:border-gray-700 relative z-0 h-[625px] w-[100%] lg:w-[50%]">
+                            <MapContainer center={selectedStation.coordinates as LatLngExpression} zoom={12} scrollWheelZoom={false} dragging={false}
+                                    style={
+                                        { height: "100%", width: "100%" }
+                                    }>
+                                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
+                                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                                    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                                    crossOrigin="">
+                                </script>
+                                <TileLayer
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                                { selectedCard.coordinates ? <Marker position={selectedCard.coordinates as LatLngExpression}/> : null }
+                                <Marker position={selectedStation.coordinates as LatLngExpression}/>
+                            </MapContainer>
+                        </div>
                     </div>
                 </>
             </Modal>
         }
         </section>
-    </div>
+        </div>
     </>
   )
 }

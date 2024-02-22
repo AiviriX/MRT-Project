@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { hasSessionToken } from '../../auth/sessionTokenManager';
+import { API_URL } from '../..';
+
 const urlEndpoint = process.env.SECRET_KEY;
 console.log(urlEndpoint)
 
@@ -22,7 +24,7 @@ export const AdminLogin = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch('http://localhost:5000/login/admin', {
+            const response = await fetch(`${API_URL}/login/admin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -49,7 +51,7 @@ export const AdminLogin = () => {
 
     const handleRegister = async () => {
         try {
-            const response = await fetch('http://localhost:5000/login/admin/register', {
+            const response = await fetch(`${API_URL}/login/admin/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
