@@ -28,13 +28,21 @@ export const AddBalanceToCard: React.FC<UpdateCardProps> = ({ uuid, balance, tap
   };
 
   const callAddBalance = async (uuid: String, newBalance: number) => {
-    if (newBalance < 0) {
-      alert('Balance cannot be negative')
+    if (balance <= 0) {
+      alert('Balance cannot be negative or zero')
+      setSuccessModal(false);
       return
     }
 
     if (balance > 10000) {
       alert('Balance cannot be greater than 10000')
+      setSuccessModal(false);
+      return
+    }
+
+    if (balance < 10){
+      alert('Balance cannot be less than 10')
+      setSuccessModal(false);
       return
     }
     
@@ -52,14 +60,6 @@ export const AddBalanceToCard: React.FC<UpdateCardProps> = ({ uuid, balance, tap
     <div className='flex space-x-1'>   
       <button className='w-32 h-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
        onClick={() => setIsBalanceModal(true)}>Add Balance
-      </button>
-
-      <button className=' h-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
-        Tap in
-      </button>
-
-      <button className=' h-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
-        Tap out
       </button>
 
       <Modal

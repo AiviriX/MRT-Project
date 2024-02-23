@@ -154,7 +154,7 @@ export const MRT3StationsExport: React.FC<RetrieveMarker> = ({ setSelectedMarker
         fetchStations();
     }, []);
 
-    const polyLines = stations.flatMap((station: StationData) =>
+    const polyLines = stations ? stations.flatMap((station: StationData) =>
         station.connectedStation?.map((connectedStationId: string) => {
             const connectedStation = stations.find((s) => s._id === connectedStationId);
             if (connectedStation) {
@@ -166,7 +166,7 @@ export const MRT3StationsExport: React.FC<RetrieveMarker> = ({ setSelectedMarker
             }
             return null;
         }) || []
-    );
+    ) : [];
 
     return (
         <>
@@ -175,7 +175,7 @@ export const MRT3StationsExport: React.FC<RetrieveMarker> = ({ setSelectedMarker
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 className="z-0"
             />
-            {stations.map((station) => (
+            {stations && stations.map((station) => (
                 <>
                     <Marker 
                         position={[station.coordinates[0], station.coordinates[1]]}

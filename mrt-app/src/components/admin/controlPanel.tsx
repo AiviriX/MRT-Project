@@ -39,7 +39,7 @@ const AdminControl = () => {
                 <div className="relative">
                     {/* Sidebar menu */}
                     <aside
-                        className={`absolute top-0 left-0 border-blue border-solid border-2 z-49 ${
+                        className={`absolute top-0 left-0 border-blue border-solid border-2 z-50 lg:z-0 ${
                             (isLargeScreen || showSidebar) ? 'translate-x-0' : '-translate-x-full'
                         } md:translate-x-0 transform transition-transform duration-300 md:transform-none flex flex-col w-64 h-screen bg-gray-800 text-white p-6 space-y-6`}
                     >

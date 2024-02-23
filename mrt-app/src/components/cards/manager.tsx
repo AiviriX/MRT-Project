@@ -151,6 +151,7 @@ export const tapInCard = async (cardData: CardData, stationData: StationData) =>
         if (response.status === 403){
             alert('Card is already tapped in. Mismatch fee may occur.')
         }
+        
     } catch (error) {
         console.error(error);
 

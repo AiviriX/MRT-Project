@@ -23,6 +23,10 @@ const Fare: React.FC = () => {
   }, []);
 
   const handleUpdateFare = async () => {
+    if (fare <= 0) {
+      alert('Fare cannot be negative or zero');
+      return;
+    }
     try {
       const response = await fetch(`http://localhost:5000/stations/setFare`, {
         method: 'PUT',

@@ -237,7 +237,7 @@ export const TappingManager: React.FC<TappingManagerProps> = ({cardProp, station
                 </div>
                 <div className="border-2 border-black rounded-lg ">
                     <div className="p-2">
-                        <Select/>
+                        {/* <Select/> */}
                         {
                             selectedStation ? (
                                 <div>
